@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>reveal.js</title>
+
+	<link rel="stylesheet" href="dist/reset.css">
+	<link rel="stylesheet" href="dist/reveal.css">
+	<link rel="stylesheet" href="dist/theme/black.css">
+
+	<!-- Theme used for syntax highlighted code -->
+	<link rel="stylesheet" href="plugin/highlight/monokai.css">
+
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<!-- 各カテゴリのセクションを作成 -->
+			<section id="IT">
+				<!-- ITカテゴリの問題をここに追加 -->
+			</section>
+			<section id="Kanji">
+				<!-- Kanjiカテゴリの問題をここに追加 -->
+			</section>
+		</div>
+	</div>
+
+	<style type="text/css">
+		h2.subtitle {
+			font-size: 24px;
+			/* 小さく表示 */
+		}
+
+		p.answer {
+			display: none;
+			/* デフォルトでは答えを非表示 */
+		}
+
+		.char {
+			display: inline-block;
+			opacity: 0;
+			transform: translateY(1em);
+			transition: all 5s;
+		}
+
+		.question .char {
+			display: none;
+			/* この行を追加します */
+		}
+	</style>
+	</style>
+	<script src="dist/reveal.js"></script>
+	<script src="plugin/notes/notes.js"></script>
+	<script src="plugin/markdown/markdown.js"></script>
+	<script src="plugin/highlight/highlight.js"></script>
+
+	<script>
+
+		Reveal.initialize({
+			hash: true,
+			slideNumber: true,
+			plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+			keyboard: {
+				80: null // Pキーのデフォルトの動作を無効にする
+			}
+		});
+
+		let quizzes = {
+			IT: [
+				["フェイスブックを創設した人物の名前は？", "マーク・ザッカーバーグ"],
+				["マイクロソフトを創設した2人の主要な創業者は？", "ビル・ゲイツとポール・アレン"]
+			],
+			Kanji: [
+				["月極", "つきぎめ"],
+				["市井", "しせい"]
+			]
+		};
+
+		window.onload = function () {
+			let itSection = document.getElementById("IT");
+			let kanjiSection = document.getElementById("Kanji");
+
+			// IT カテゴリの問題を追加
+			quizzes.IT.forEach((quiz) => {
+				let slide = document.createElement("section");
+				slide.innerHTML = `
+                <h2 class="subtitle">ITの問題</h2>
+                <p class="question">${splitChars(quiz[0])}</p>
+                <p class="answer">答え: ${quiz[1]}</p>
+            `;
+				itSection.appendChild(slide);
+			});
+
+			// Kanji カテゴリの問題を追加
+			let ind = 1;
+			quizzes.Kanji.forEach((quiz) => {
+				let slide = document.createElement("section");
+				slide.innerHTML = `
+                <h2 class="subtitle">Kanjiの問題${ind}</h2>
+                <p class="question">${splitChars(quiz[0])}</p>
+                <p class="answer">答え: ${quiz[1]}</p>
+            `;
+				kanjiSection.appendChild(slide);
+				ind++;
+			});
+
+			// setTimeout(animateChars, 1000);
+		};
+
+		function splitChars(str) {
+			return str.split('').map(char => `<span class="char">${char}</span>`).join('');
+		}
+		function animateChars() {
+			let chars = document.querySelectorAll('.char');
+			chars.forEach((char, index) => {
+				setTimeout(() => {
+					char.style.opacity = '1';
+					char.style.transform = 'translateY(0)';
+				}, 150 * index);  // 50 * indexから150 * indexに変更
+			});
+		}
+
+		// Aキーで現在のスライドの答えを表示
+		document.addEventListener('keydown', function (event) {
+			if (event.key === 'a' || event.key === 'A') {
+				let currentSlide = Reveal.getCurrentSlide();
+				let answer = currentSlide.querySelector('.answer');
+				if (answer) {
+					answer.style.display = 'block';
+				}
+			}
+
+			if (event.key === 'x' || event.key === 'X') {
+				let currentSlide = Reveal.getCurrentSlide();
+				let chars = currentSlide.querySelectorAll('.question .char');
+				if (chars.length) {
+					chars.forEach((char, index) => {
+						setTimeout(() => {
+							char.style.display = 'inline-block'; // この行を追加します。
+							char.style.opacity = '1';
+							char.style.transform = 'translateY(0)';
+						}, 150 * index);
+					});
+				}
+			}
+		});
+
+		// スライドが切り替わるたびに答えを非表示にする
+		Reveal.addEventListener('slidechanged', function () {
+			document.querySelectorAll('.answer').forEach(answer => {
+				answer.style.display = 'none';
+			});
+		});
+
+
+	</script>
+
+</body>
+
+</html>s

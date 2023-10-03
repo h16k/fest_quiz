@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>reveal.js</title>
+	<link rel="stylesheet" href="dist/reset.css">
+	<link rel="stylesheet" href="dist/reveal.css">
+	<link rel="stylesheet" href="dist/theme/black.css">
+	<link rel="stylesheet" href="plugin/highlight/monokai.css">
+
+	<style type="text/css">
+		h2.subtitle {
+			font-size: 24px;
+		}
+
+		p.answer {
+			display: none;
+		}
+
+		.char {
+			display: inline-block;
+			opacity: 0;
+			transform: translateY(1em);
+			transition: all 5s;
+		}
+
+		.question .char {
+			display: none;
+		}
+
+		body {
+			background-color: black;
+		}
+
+		.reveal .answer{
+			color: rgb(83, 176, 206);
+		}
+
+		.reveal h1 {
+			font-size: 2em;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section id="IT"></section>
+			<section id="Kanji"></section>
+		</div>
+	</div>
+
+	<script src="dist/reveal.js"></script>
+	<script src="plugin/notes/notes.js"></script>
+	<script src="plugin/markdown/markdown.js"></script>
+	<script src="plugin/highlight/highlight.js"></script>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			Reveal.initialize({
+				hash: true,
+				slideNumber: true,
+				plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+				keyboard: {
+					80: null
+				}
+			});
+
+			const quizzes = {
+				IT: [
+					["フェイスブックを創設した人物の名前は？", "マーク・ザッカーバーグ"],
+					["マイクロソフトを創設した2人の主要な創業者は？", "ビル・ゲイツとポール・アレン"],
+					["PCとは何の略称？	", "Personal Computer (パーソナルコンピュータ)	"],
+					["電子メールやホームページの閲覧を介して、コンピュータに侵入する特殊なプログラムのことを何という？	", "コンピュータウィルス"],
+					["「電子政府」、オンライン投票の制度で有名なバルト三国の一国はどこ？", "エストニア"],
+					["偽のウェブサイトを作り、相手の情報を抜き取る行為のことを何詐欺という？", "Phishing(フィッシング)"],
+					["行政運営の円滑化を狙い交付されている、12桁の番号が記載された電子カードは何という？", "マイナンバーカード"],
+					["主にサイバー攻撃から企業を守る役割を担う、“善意”のハッカーのことをある色を用いて何という？", "ホワイトハッカー"],
+					["X(旧ツイッター)などで見かけられる、狭いコミュニティの中で同じような意見ばかりが返ってきて増幅していく現象のことを何というか？", "エコチャンバー現象"],
+					["URLでよく見かけるhttpsのうち、sは何を意味している？", "Secure, 通信が暗号化されていることを示している。"],
+					["アメリカ・カリフォルニア州にある、IT企業が集積している地域のことを何というか？", "Silicon Valley (シリコンバレー)	"],
+
+				],
+				Kanji: [
+					["月極", "つきぎめ"],
+					["市井", "しせい"],
+					["代替", "だいたい"],
+					["続柄", "つづきがら"],
+					["貼付", "ちょうふ"],
+					["御利益", "ごりやく"],
+					["漸く", "ようや(く)"],
+					["暫く", "しばら(く)"],
+					["早急", "さっきゅう"],
+					["詩歌", "しいか"],
+				]
+			};
+
+			addQuizzesToSlides("IT", quizzes.IT);
+			addQuizzesToSlides("Kanji", quizzes.Kanji);
+
+			document.addEventListener('keydown', handleKeydown);
+			Reveal.addEventListener('slidechanged', hideAllAnswers);
+		});
+
+		function addQuizzesToSlides(category, quizzes) {
+			let section = document.getElementById(category);
+			quizzes.forEach((quiz, index) => {
+				let slide = document.createElement("section");
+				slide.innerHTML = `
+                    <h2 class="subtitle">${category}（${index + 1}）</h2>
+                    <p class="question">${splitChars(quiz[0])}</p>
+                    <p class="answer">${quiz[1]}</p>
+                `;
+				section.appendChild(slide);
+			});
+		}
+
+		function splitChars(str) {
+			return str.split('').map(char => `<span class="char">${char}</span>`).join('');
+		}
+
+		function handleKeydown(event) {
+			let currentSlide = Reveal.getCurrentSlide();
+			if (event.key.toLowerCase() === 'a') {
+				let answer = currentSlide.querySelector('.answer');
+				if (answer) {
+					answer.style.display = 'block';
+				}
+			}
+
+			if (event.key.toLowerCase() === 'x') {
+				let chars = currentSlide.querySelectorAll('.question .char');
+				chars.forEach((char, index) => {
+					setTimeout(() => {
+						char.style.display = 'inline-block';
+						char.style.opacity = '1';
+						char.style.transform = 'translateY(0)';
+					}, 150 * index);
+				});
+			}
+		}
+
+		function hideAllAnswers() {
+			document.querySelectorAll('.answer').forEach(answer => {
+				answer.style.display = 'none';
+			});
+		}
+	</script>
+</body>
+
+</html>

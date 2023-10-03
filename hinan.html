@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>reveal.js</title>
+
+	<link rel="stylesheet" href="dist/reset.css">
+	<link rel="stylesheet" href="dist/reveal.css">
+	<link rel="stylesheet" href="dist/theme/black.css">
+
+	<!-- Theme used for syntax highlighted code -->
+	<link rel="stylesheet" href="plugin/highlight/monokai.css">
+
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+            <!-- 各カテゴリのセクションを作成 -->
+            <section id="IT">
+                <!-- ITカテゴリの問題をここに追加 -->
+            </section>
+            <section id="Kanji">
+                <!-- Kanjiカテゴリの問題をここに追加 -->
+            </section>
+		</div>
+	</div>
+
+	<style type="text/css">
+		p,
+		h1 {
+			text-align: left;
+		}
+	</style>
+	<script src="dist/reveal.js"></script>
+	<script src="plugin/notes/notes.js"></script>
+	<script src="plugin/markdown/markdown.js"></script>
+	<script src="plugin/highlight/highlight.js"></script>
+
+	<script>
+
+		Reveal.initialize({
+			hash: true,
+			slideNumber: true,
+			plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+			keyboard: {
+				80: null // Pキーのデフォルトの動作を無効にする
+			}
+		});
+
+		let quizzes = {
+			IT: [
+				["フェイスブックを創設した人物の名前は？", "マーク・ザッカーバーグ"],
+				["マイクロソフトを創設した2人の主要な創業者は？", "ビル・ゲイツとポール・アレン"]
+			],
+			Kanji: [
+				["月極", "つきぎめ"],
+				["市井", "しせい"]
+			]
+		};
+
+		let allQuizzes = [];
+		Object.entries(quizzes).forEach(([category, quizList]) => {
+			let categoryElement = document.getElementById(category);
+			quizList.forEach(quiz => {
+				allQuizzes.push({
+					question: quiz[0],
+					answer: quiz[1]
+				});
+				let questionSlide = document.createElement('section');
+				// questionSlide.setAttribute('data-background-color', '#000');
+
+				let questionElem = document.createElement('h2');
+				questionElem.classList.add('question');
+				questionSlide.appendChild(questionElem);
+
+				let answerElem = document.createElement('p');
+				answerElem.textContent = quiz[1];
+				answerElem.style.display = "none";
+				questionSlide.appendChild(answerElem);
+
+				categoryElement.appendChild(questionSlide);
+			});
+		});
+
+
+		// let timerId = null; // タイマーのIDを保存する変数を追加
+		// // アニメーションの一時停止状態をトラックする変数
+		// let isPaused = true;
+		// function startAnimation(slide, quiz) {
+		// 	let questionElem = slide.querySelector('.question');
+		// 	questionElem.textContent = "";
+
+		// 	let idx = 0;
+
+		// 	function typeText() {
+		// 		if (idx < quiz.question.length) {
+		// 			if (!isPaused) {
+		// 				questionElem.textContent += quiz.question.charAt(idx);
+		// 				idx++;
+		// 			}
+		// 			timerId = setTimeout(typeText, 100); // タイマーのIDを保存
+		// 		}
+		// 	}
+		// 	typeText();
+		// }
+
+		// Reveal.addEventListener('slidechanged', function (event) {
+		// 	// 答えを非表示にする
+		// 	let answerElem = event.currentSlide.querySelector('p');
+		// 	if (answerElem) {
+		// 		answerElem.style.display = "none";
+		// 	}
+
+		// 	// アニメーションの一時停止状態を解除
+		// 	isPaused = false;
+
+		// 	// タイマーをクリア
+		// 	if (timerId !== null) {
+		// 		clearTimeout(timerId);
+		// 	}
+
+		// 	let index = Reveal.getIndices().h;
+			// if (index < allQuizzes.length) {
+			// 	let quiz = allQuizzes[index];
+			// 	startAnimation(event.currentSlide, quiz);
+			// }
+		// });
+
+		document.addEventListener('DOMContentLoaded', function () {
+			// startAnimation(document.querySelector(".reveal .slides > section:first-child"), allQuizzes[0]);
+		});
+
+		// Aキーで答えの表示、Pキーでアニメーションの一時停止/再開
+		document.addEventListener('keydown', function (event) {
+			if (event.key === 'a' || event.key === 'A') {
+				let currentSlide = Reveal.getCurrentSlide();
+				let answerElem = currentSlide.querySelector('p');
+				if (answerElem) {
+					answerElem.style.display = "block";
+				}
+			} else if (event.key === 'p' || event.key === 'P') {
+				isPaused = !isPaused;  // 状態をトグル
+				event.preventDefault();  // イベントの伝播を停止
+			}
+		});
+
+	</script>
+
+</body>
+
+</html>
