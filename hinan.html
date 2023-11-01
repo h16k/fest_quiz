@@ -4,152 +4,263 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 	<title>reveal.js</title>
-
-	<link rel="stylesheet" href="dist/reset.css">
 	<link rel="stylesheet" href="dist/reveal.css">
-	<link rel="stylesheet" href="dist/theme/black.css">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
 
-	<!-- Theme used for syntax highlighted code -->
-	<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	<style type="text/css">
+		body {
+			background-color: black;
+			font-family: 'Noto Serif JP', serif;
+			font-style: normal;
+			font-weight: 400;
+			font-size: 48px;
+			color: aqua;
+		}
 
+		h2.subtitle {
+			font-size: 24px;
+		}
+
+		p.answer {
+			display: none;
+		}
+
+		.char {
+			display: inline-block;
+			opacity: 0;
+			transform: translateY(1em);
+			transition: all 5s;
+		}
+
+		.question .char {
+			display: none;
+		}
+
+
+
+		.reveal .answer {
+			color: rgb(83, 176, 206);
+		}
+
+		.reveal h1 {
+			font-size: 2em;
+		}
+
+		.red {
+			border: 5px solid rgba(214, 20, 20, 0.5);
+			width: 500px;
+			height: 500px;
+		}
+
+		.white {
+			border: 5px solid rgba(216, 213, 213, 0.5);
+			width: 480px;
+			height: 480px;
+		}
+
+		/* 円のデザイン */
+		.reveal .circle {
+			border-radius: 50%;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			animation: wave 3s infinite;
+		}
+
+		/* アニメーションの効果 */
+		@keyframes wave {
+
+			0%,
+			100% {
+				transform: translate(-50%, -50%) scale(1);
+			}
+
+			50% {
+				transform: translate(-50%, -50%) scale(1.05);
+			}
+		}
+
+		/* スライド番号のデザイン */
+		.slide-number-frame {
+			position: absolute;
+			bottom: 20px;
+			right: 20px;
+			width: 120px;
+			height: 50px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.slide-number {
+			font-size: 24px;
+			color: white;
+			z-index: 1;
+		}
+
+
+		/* 赤いラインのデザイン */
+		.red-line {
+			width: 2px;
+			height: 0;
+			background-color: red;
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			transform: rotate(-45deg);
+			transform-origin: bottom right;
+			animation: lineStretch 0.5s forwards, fadeInSlideNumber 0.5s 0.5s forwards;
+		}
+
+		/* 赤いラインのアニメーション */
+		@keyframes lineStretch {
+			to {
+				height: 100px;
+			}
+		}
+
+		/* スライド番号のデザイン更新 */
+		.slide-number {
+			/* その他のスタイルはそのままで */
+			opacity: 0;
+			transform: translateY(20px);
+		}
+
+		/* スライド番号のアニメーション */
+		@keyframes fadeInSlideNumber {
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+	</style>
 </head>
 
 <body>
 	<div class="reveal">
 		<div class="slides">
-            <!-- 各カテゴリのセクションを作成 -->
-            <section id="IT">
-                <!-- ITカテゴリの問題をここに追加 -->
-            </section>
-            <section id="Kanji">
-                <!-- Kanjiカテゴリの問題をここに追加 -->
-            </section>
+			<section id="IT"></section>
+			<section id="Kanji">
+				<div class="circle red"></div>
+				<div class="circle white"></div>
+				<div class="red-line"></div>
+				<div class="slide-number-frame">
+					<svg viewBox="0 0 120 50" xmlns="http://www.w3.org/2000/svg">
+						<polygon points="0,0 30,50 90,50 120,0 90,0 60,50 30,0" fill="none" stroke="#666"
+							stroke-width="3" />
+					</svg>
+					<span class="slide-number">1</span>
+				</div>
+			</section>
+			<section id="Law"></section>
+			<section id="Trivia"></section>
 		</div>
 	</div>
 
-	<style type="text/css">
-		p,
-		h1 {
-			text-align: left;
-		}
-	</style>
 	<script src="dist/reveal.js"></script>
-	<script src="plugin/notes/notes.js"></script>
-	<script src="plugin/markdown/markdown.js"></script>
-	<script src="plugin/highlight/highlight.js"></script>
 
 	<script>
-
-		Reveal.initialize({
-			hash: true,
-			slideNumber: true,
-			plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
-			keyboard: {
-				80: null // Pキーのデフォルトの動作を無効にする
-			}
-		});
-
-		let quizzes = {
-			IT: [
-				["フェイスブックを創設した人物の名前は？", "マーク・ザッカーバーグ"],
-				["マイクロソフトを創設した2人の主要な創業者は？", "ビル・ゲイツとポール・アレン"]
-			],
-			Kanji: [
-				["月極", "つきぎめ"],
-				["市井", "しせい"]
-			]
-		};
-
-		let allQuizzes = [];
-		Object.entries(quizzes).forEach(([category, quizList]) => {
-			let categoryElement = document.getElementById(category);
-			quizList.forEach(quiz => {
-				allQuizzes.push({
-					question: quiz[0],
-					answer: quiz[1]
-				});
-				let questionSlide = document.createElement('section');
-				// questionSlide.setAttribute('data-background-color', '#000');
-
-				let questionElem = document.createElement('h2');
-				questionElem.classList.add('question');
-				questionSlide.appendChild(questionElem);
-
-				let answerElem = document.createElement('p');
-				answerElem.textContent = quiz[1];
-				answerElem.style.display = "none";
-				questionSlide.appendChild(answerElem);
-
-				categoryElement.appendChild(questionSlide);
-			});
-		});
-
-
-		// let timerId = null; // タイマーのIDを保存する変数を追加
-		// // アニメーションの一時停止状態をトラックする変数
-		// let isPaused = true;
-		// function startAnimation(slide, quiz) {
-		// 	let questionElem = slide.querySelector('.question');
-		// 	questionElem.textContent = "";
-
-		// 	let idx = 0;
-
-		// 	function typeText() {
-		// 		if (idx < quiz.question.length) {
-		// 			if (!isPaused) {
-		// 				questionElem.textContent += quiz.question.charAt(idx);
-		// 				idx++;
-		// 			}
-		// 			timerId = setTimeout(typeText, 100); // タイマーのIDを保存
-		// 		}
-		// 	}
-		// 	typeText();
-		// }
-
-		// Reveal.addEventListener('slidechanged', function (event) {
-		// 	// 答えを非表示にする
-		// 	let answerElem = event.currentSlide.querySelector('p');
-		// 	if (answerElem) {
-		// 		answerElem.style.display = "none";
-		// 	}
-
-		// 	// アニメーションの一時停止状態を解除
-		// 	isPaused = false;
-
-		// 	// タイマーをクリア
-		// 	if (timerId !== null) {
-		// 		clearTimeout(timerId);
-		// 	}
-
-		// 	let index = Reveal.getIndices().h;
-			// if (index < allQuizzes.length) {
-			// 	let quiz = allQuizzes[index];
-			// 	startAnimation(event.currentSlide, quiz);
-			// }
-		// });
-
-		document.addEventListener('DOMContentLoaded', function () {
-			// startAnimation(document.querySelector(".reveal .slides > section:first-child"), allQuizzes[0]);
-		});
-
-		// Aキーで答えの表示、Pキーでアニメーションの一時停止/再開
-		document.addEventListener('keydown', function (event) {
-			if (event.key === 'a' || event.key === 'A') {
-				let currentSlide = Reveal.getCurrentSlide();
-				let answerElem = currentSlide.querySelector('p');
-				if (answerElem) {
-					answerElem.style.display = "block";
+		document.addEventListener("DOMContentLoaded", function () {
+			Reveal.initialize({
+				hash: true,
+				slideNumber: true,
+				plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+				keyboard: {
+					80: null
 				}
-			} else if (event.key === 'p' || event.key === 'P') {
-				isPaused = !isPaused;  // 状態をトグル
-				event.preventDefault();  // イベントの伝播を停止
-			}
+			});
+
+			const quizzes = {
+				IT: [
+					["フェイスブックを創設した人物の名前は？", "マーク・ザッカーバーグ"],
+				
+				],
+				Kanji: [
+					["月極", "つきぎめ"],
+					["詩歌", "しいか"],
+				],
+
+				Law: [
+					["裁判官が過去の同様の事件における判決に拘束されることをなんというか。", "先例拘束性の原則"],
+				],
+
+				Trivia: [
+					["日本で、ふじみ野市と富士見市がともに存在する都道府県はどこでしょう？", "埼玉県（さいたまけん）"],
+			]
+			};
+
+			addQuizzesToSlides("IT", quizzes.IT);
+			addQuizzesToSlides("Kanji", quizzes.Kanji);
+			addQuizzesToSlides("Law", quizzes.Law);
+			addQuizzesToSlides("Trivia", quizzes.Trivia);
+
+			document.addEventListener('keydown', handleKeydown);
+			Reveal.addEventListener('slidechanged', hideAllAnswers);
 		});
 
-	</script>
+		function addQuizzesToSlides(category, quizzes) {
+			let section = document.getElementById(category);
+			quizzes.forEach((quiz, index) => {
+				let slide = document.createElement("section");
+				slide.innerHTML = `
+                    <h2 class="subtitle">${category}（${index + 1}）</h2>
+                    <p class="question">${splitChars(quiz[0])}</p>
+                    <p class="answer">${quiz[1]}</p>
+                `;
+				section.appendChild(slide);
+			});
+		}
 
+		function splitChars(str) {
+			return str.split('').map(char => `<span class="char">${char}</span>`).join('');
+		}
+
+		function handleKeydown(event) {
+			let currentSlide = Reveal.getCurrentSlide();
+			let category = currentSlide.parentNode.id;
+			let index = Array.from(currentSlide.parentNode.children).indexOf(currentSlide) + 1;
+
+			if (event.key.toLowerCase() === 'a') {
+				let answer = currentSlide.querySelector('.answer');
+				if (answer) {
+					answer.style.display = 'block';
+				}
+			}
+
+			if (event.key.toLowerCase() === 'x') {
+				let chars = currentSlide.querySelectorAll('.question .char');
+				chars.forEach((char, index) => {
+					setTimeout(() => {
+						char.style.display = 'inline-block';
+						char.style.opacity = '1';
+						char.style.transform = 'translateY(0)';
+					}, 170 * index);
+				});
+
+				// 音声を再生する部分
+				playAudio(category, index);
+			}
+		}
+		function zeroPad(number, width) {
+			return String(number).padStart(width, '0');
+		}
+
+		function playAudio(category, index) {
+			let ind = zeroPad(index, 2)
+			let audioPath = `${category}/${ind}-q.wav`;  // 音声ファイルへのパスを定義
+			let audio = new Audio(audioPath);
+			audio.play();
+		}
+
+		function hideAllAnswers() {
+			document.querySelectorAll('.answer').forEach(answer => {
+				answer.style.display = 'none';
+			});
+		}
+		
+	</script>
 </body>
 
 </html>

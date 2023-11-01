@@ -9,8 +9,18 @@
 	<link rel="stylesheet" href="dist/reveal.css">
 	<link rel="stylesheet" href="dist/theme/black.css">
 	<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
 
 	<style type="text/css">
+		body {
+			background-color: black;
+			font-family: 'Noto Serif JP', serif;
+			font-style: normal;
+			font-weight: 400;
+			font-size: 48px;
+			color: aqua;
+		}
+
 		h2.subtitle {
 			font-size: 24px;
 		}
@@ -30,10 +40,6 @@
 			display: none;
 		}
 
-		body {
-			background-color: black;
-		}
-
 		.reveal .answer {
 			color: rgb(83, 176, 206);
 		}
@@ -41,14 +47,115 @@
 		.reveal h1 {
 			font-size: 2em;
 		}
+
+		/* Box designs */
+		.red,
+		.white {
+			border-width: 5px;
+			border-style: solid;
+			position: relative;
+		}
+
+		.red {
+			border-color: rgba(214, 20, 20, 0.5);
+			width: 500px;
+			height: 500px;
+		}
+
+		.white {
+			border-color: rgba(216, 213, 213, 0.5);
+			width: 480px;
+			height: 480px;
+		}
+
+		/* Circle design & animation */
+		.reveal .circle {
+			border-radius: 50%;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			animation: wave 3s infinite;
+		}
+
+		@keyframes wave {
+
+			0%,
+			100% {
+				transform: translate(-50%, -50%) scale(1);
+			}
+
+			50% {
+				transform: translate(-50%, -50%) scale(1.05);
+			}
+		}
+
+		/* Slide number design & animation */
+		.slide-number-frame {
+			position: absolute;
+			bottom: 20px;
+			right: 20px;
+			width: 120px;
+			height: 50px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.slide-number {
+			font-size: 24px;
+			color: white;
+			z-index: 1;
+			opacity: 0;
+			transform: translateY(20px);
+			animation: fadeInSlideNumber 0.5s 0.5s forwards;
+		}
+
+		/* Red line design & animation */
+		.red-line {
+			width: 2px;
+			height: 0;
+			background-color: red;
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			transform: rotate(-45deg);
+			transform-origin: bottom right;
+			animation: lineStretch 0.5s forwards;
+		}
+
+		@keyframes lineStretch {
+			to {
+				height: 100px;
+			}
+		}
+
+		@keyframes fadeInSlideNumber {
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
 	</style>
+
 </head>
 
 <body>
 	<div class="reveal">
 		<div class="slides">
 			<section id="IT"></section>
-			<section id="Kanji"></section>
+			<section id="Kanji">
+				<div class="circle red"></div>
+				<div class="circle white"></div>
+				<div class="red-line"></div>
+				<div class="slide-number-frame">
+					<svg viewBox="0 0 120 50" xmlns="http://www.w3.org/2000/svg">
+						<polygon points="0,0 30,50 90,50 120,0 90,0 60,50 30,0" fill="none" stroke="#666"
+							stroke-width="3" />
+					</svg>
+					<span class="slide-number">1</span>
+				</div>
+			</section>
 			<section id="Law"></section>
 			<section id="Trivia"></section>
 		</div>
@@ -60,112 +167,148 @@
 	<script src="plugin/highlight/highlight.js"></script>
 
 	<script>
+
 		document.addEventListener("DOMContentLoaded", function () {
+			initializeReveal();
+			setupQuizzes();
+			setupEventListeners();
+		});
+
+		function initializeReveal() {
 			Reveal.initialize({
 				hash: true,
 				slideNumber: true,
 				plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
-				keyboard: {
-					80: null
-				}
+				keyboard: { 80: null }
 			});
+		}
 
-			const quizzes = {
-				IT: [
-					["フェイスブックを創設した人物の名前は？", "マーク・ザッカーバーグ"],
-					["マイクロソフトを創設した2人の主要な創業者は？", "ビル・ゲイツとポール・アレン"],
-					["PCとは何の略称？	", "Personal Computer (パーソナルコンピュータ)	"],
-					["電子メールやホームページの閲覧を介して、コンピュータに侵入する特殊なプログラムのことを何という？	", "コンピュータウィルス"],
-					["「電子政府」、オンライン投票の制度で有名なバルト三国の一国はどこ？", "エストニア"],
-					["偽のウェブサイトを作り、相手の情報を抜き取る行為のことを何詐欺という？", "Phishing(フィッシング)"],
-					["行政運営の円滑化を狙い交付されている、12桁の番号が記載された電子カードは何という？", "マイナンバーカード"],
-					["主にサイバー攻撃から企業を守る役割を担う、“善意”のハッカーのことをある色を用いて何という？", "ホワイトハッカー"],
-					["X(旧ツイッター)などで見かけられる、狭いコミュニティの中で同じような意見ばかりが返ってきて増幅していく現象のことを何というか？", "エコチャンバー現象"],
-					["URLでよく見かけるhttpsのうち、sは何を意味している？", "Secure, 通信が暗号化されていることを示している。"],
-					["アメリカ・カリフォルニア州にある、IT企業が集積している地域のことを何というか？", "Silicon Valley (シリコンバレー)	"],
+		const quizzes = {
+			// ... 既存のクイズのデータ ...
+			IT: [
+				["フェイスブックを創設した人物の名前は？", "マーク・ザッカーバーグ"],
+				["マイクロソフトを創設した2人の主要な創業者は？", "ビル・ゲイツとポール・アレン"],
+				["PCとは何の略称？	", "Personal Computer (パーソナルコンピュータ)	"],
+				["電子メールやホームページの閲覧を介して、コンピュータに侵入する特殊なプログラムのことを何という？	", "コンピュータウィルス"],
+				["「電子政府」、オンライン投票の制度で有名なバルト三国の一国はどこ？", "エストニア"],
+				["偽のウェブサイトを作り、相手の情報を抜き取る行為のことを何詐欺という？", "Phishing(フィッシング)"],
+				["行政運営の円滑化を狙い交付されている、12桁の番号が記載された電子カードは何という？", "マイナンバーカード"],
+				["主にサイバー攻撃から企業を守る役割を担う、“善意”のハッカーのことをある色を用いて何という？", "ホワイトハッカー"],
+				["X(旧ツイッター)などで見かけられる、狭いコミュニティの中で同じような意見ばかりが返ってきて増幅していく現象のことを何というか？", "エコチャンバー現象"],
+				["URLでよく見かけるhttpsのうち、sは何を意味している？", "Secure, 通信が暗号化されていることを示している。"],
+				["アメリカ・カリフォルニア州にある、IT企業が集積している地域のことを何というか？", "Silicon Valley (シリコンバレー)	"],
 
-				],
-				Kanji: [
-					["月極", "つきぎめ"],
-					["市井", "しせい"],
-					["代替", "だいたい"],
-					["続柄", "つづきがら"],
-					["貼付", "ちょうふ"],
-					["御利益", "ごりやく"],
-					["漸く", "ようや(く)"],
-					["暫く", "しばら(く)"],
-					["早急", "さっきゅう"],
-					["詩歌", "しいか"],
-				],
+			],
+			Kanji: [
+				["月極", "つきぎめ"],
+				["市井", "しせい"],
+				["代替", "だいたい"],
+				["続柄", "つづきがら"],
+				["貼付", "ちょうふ"],
+				["御利益", "ごりやく"],
+				["漸く", "ようや(く)"],
+				["暫く", "しばら(く)"],
+				["早急", "さっきゅう"],
+				["詩歌", "しいか"],
+			],
 
-				Law: [
-					["裁判官が過去の同様の事件における判決に拘束されることをなんというか。", "先例拘束性の原則"],
-					["社会の一員として、互いに相手方の信頼を裏切らないように､誠意をもって行動しなければならない原則をなんというか。", "信義誠実の原則"],
-					["個人や法人､不動産など実体法上の重要な権利や義務などを社会に向けて公示し､それらを保護した上で取引を円滑にするために定められている法制度をなんというか。", "登記"],
-					["借金に苦しむ人がいたずらに増えないように､上限利息を設定する法律をなんというか。", "利息制限法"],
-					["事業者が用意する多数の取引を行うためにあらかじめ定型化された契約内容をなんというか。", "約款"],
-					["日本語では「意見公募手続」ともいう、行政機関が規則の制定や改廃などを行う際に、広く一般に改善案などの意見を求める手続きのことを英語で何というでしょう？", "パブリックコメント"],
-				],
+			Law: [
+				["裁判官が過去の同様の事件における判決に拘束されることをなんというか。", "先例拘束性の原則"],
+				["社会の一員として、互いに相手方の信頼を裏切らないように､誠意をもって行動しなければならない原則をなんというか。", "信義誠実の原則"],
+				["個人や法人､不動産など実体法上の重要な権利や義務などを社会に向けて公示し､それらを保護した上で取引を円滑にするために定められている法制度をなんというか。", "登記"],
+				["借金に苦しむ人がいたずらに増えないように､上限利息を設定する法律をなんというか。", "利息制限法"],
+				["事業者が用意する多数の取引を行うためにあらかじめ定型化された契約内容をなんというか。", "約款"],
+				["日本語では「意見公募手続」ともいう、行政機関が規則の制定や改廃などを行う際に、広く一般に改善案などの意見を求める手続きのことを英語で何というでしょう？", "パブリックコメント"],
+			],
 
-				Trivia: [
-					["日本で「ふじみ野市」と「富士見市」がともに存在する都道府県はどこでしょう？", "埼玉県（さいたまけん）"],
-					["日本の中央省庁のうち、1885年の内閣制度創設以降一度も名前が変わっていない唯一の省は何省でしょう？", "外務省（がいむしょう）"],
-					["1997年に映画『タイタニック』に更新されるまで世界歴代興行収入1位の記録を持っていた、マイケル・クライトン原作、スティーヴン・スピルバーグ監督の、恐竜をモチーフにした映画は何でしょう？", "ジュラシック・パーク"],
-					["東京六大学のうち、大学名に日本の元号が使われているのは明治大学と何大学でしょう？", "慶應義塾（けいおうぎじゅく）"],
-					["天下三名槍に数えられる、飛んできた虫が当たっただけで切れたことからその虫の名が付いたという、本多忠勝の愛槍の名前は何でしょう？", "蜻蛉切（とんぼきり）"],
-					["小さな違いはあるが、大体が同じであるということを、漢字の「大」と「小」を使った四字熟語で何というでしょう？", "大同小異（だいどうしょうい）"],
-					["河川によって運ばれた土砂が河口付近に堆積することにより形成された地形で、別名「デルタ」と呼ばれる地形の名称は何でしょう？", "三角州（さんかくす）"],
-					["テニスやゴルフで、1年のうちに四大大会のすべてを制覇することを英語で何というでしょう？", "グランドスラム"],
-					["英語で「居眠り」という意味がある、一度アラームを止めてもまた繰り返しアラームが鳴る目覚まし時計の機能を何というでしょう？", "スヌーズ"],
-					["起動しなくなったスマホなどの電子機器を指す俗語にもなっている、書道で半紙を固定するために使う重しを何というでしょう？", "文鎮（ぶんちん）"],
-				]
-			};
+			Trivia: [
+				["日本で、ふじみ野市と富士見市がともに存在する都道府県はどこでしょう？", "埼玉県（さいたまけん）"],
+				["日本の中央省庁のうち、1\u200B885年\u200Bの内閣\u200B制度創設\u200B以降\u200B\u200B一度も\u200B名前が変わっていない唯一の省は\u200B何省でしょう？", "外務省（がいむしょう）"],
+				["1997年に映画『タイタニック』に更新されるまで世界歴代興行収入1位の記録を持っていた、マイケル・クライトン原作、スティーヴン・スピルバーグ監督の、恐竜をモチーフにした映画は何でしょう？", "ジュラシック・パーク"],
+				["東京六大学のうち、\u200B\u200B大学名に日本の元号が使われているのは\u200B\u200B\u200B明治大学と何大学でしょう？", "慶應義塾（けいおうぎじゅく）"],
+				["天下三名槍に数えられる、飛んできた虫が当たっただけで切れたことからその虫の名が付いたという、本多忠勝の愛槍の名前は何でしょう？", "蜻蛉切（とんぼきり）"],
+				["小さな違いはあるが、\u200B\u200B大体が同じであるということを、漢字の「大」と「小」を使った四字熟語で何というでしょう？", "大同小異（だいどうしょうい）"],
+				["河川によって運ばれた土砂が河口付近に堆積することにより形成された地形で、\u200B\u200B別名\u200B\u200B「デルタ」と呼ばれる地形の名称は何でしょう？", "三角州（さんかくす）"],
+				["テニスやゴルフで、1年のうちに四大大会のすべてを制覇することを英語で何というでしょう？", "グランドスラム"],
+				["英語で「居眠り」という意味がある、一度アラームを止めてもまた繰り返しアラームが鳴る目覚まし時計の機能を何というでしょう？", "スヌーズ"],
+				["起動しなくなったスマホなどの電子機器を指す俗語にもなっている、書道で半紙を固定するために使う重しを何というでしょう？", "文鎮（ぶんちん）"],
+			]
+		};
 
-			addQuizzesToSlides("IT", quizzes.IT);
-			addQuizzesToSlides("Kanji", quizzes.Kanji);
-			addQuizzesToSlides("Law", quizzes.Law);
-			addQuizzesToSlides("Trivia", quizzes.Trivia);
-
-			document.addEventListener('keydown', handleKeydown);
-			Reveal.addEventListener('slidechanged', hideAllAnswers);
-		});
+		function setupQuizzes() {
+			for (let [category, quizList] of Object.entries(quizzes)) {
+				addQuizzesToSlides(category, quizList);
+			}
+		}
 
 		function addQuizzesToSlides(category, quizzes) {
-			let section = document.getElementById(category);
+			const section = document.getElementById(category);
 			quizzes.forEach((quiz, index) => {
-				let slide = document.createElement("section");
-				slide.innerHTML = `
-                    <h2 class="subtitle">${category}（${index + 1}）</h2>
-                    <p class="question">${splitChars(quiz[0])}</p>
-                    <p class="answer">${quiz[1]}</p>
-                `;
+				const slide = createQuizSlide(category, quiz, index);
 				section.appendChild(slide);
 			});
+		}
+
+		function createQuizSlide(category, quiz, index) {
+			const slide = document.createElement("section");
+			slide.innerHTML = `
+        <h2 class="subtitle">${category}（${index + 1}）</h2>
+        <p class="question">${splitChars(quiz[0])}</p>
+        <p class="answer">${quiz[1]}</p>
+    `;
+			return slide;
 		}
 
 		function splitChars(str) {
 			return str.split('').map(char => `<span class="char">${char}</span>`).join('');
 		}
 
+		function setupEventListeners() {
+			document.addEventListener('keydown', handleKeydown);
+			Reveal.addEventListener('slidechanged', hideAllAnswers);
+		}
+
 		function handleKeydown(event) {
-			let currentSlide = Reveal.getCurrentSlide();
+			const currentSlide = Reveal.getCurrentSlide();
+			const category = currentSlide.parentNode.id;
+			const index = Array.from(currentSlide.parentNode.children).indexOf(currentSlide) + 1;
+
 			if (event.key.toLowerCase() === 'a') {
-				let answer = currentSlide.querySelector('.answer');
-				if (answer) {
-					answer.style.display = 'block';
-				}
+				displayAnswer(currentSlide);
 			}
 
 			if (event.key.toLowerCase() === 'x') {
-				let chars = currentSlide.querySelectorAll('.question .char');
-				chars.forEach((char, index) => {
-					setTimeout(() => {
-						char.style.display = 'inline-block';
-						char.style.opacity = '1';
-						char.style.transform = 'translateY(0)';
-					}, 150 * index);
-				});
+				revealQuestionChars(currentSlide);
+				playQuizAudio(category, index);
 			}
+		}
+
+		function displayAnswer(slide) {
+			const answer = slide.querySelector('.answer');
+			if (answer) {
+				answer.style.display = 'block';
+			}
+		}
+
+		function revealQuestionChars(slide) {
+			const chars = slide.querySelectorAll('.question .char');
+			chars.forEach((char, index) => {
+				setTimeout(() => {
+					char.style.display = 'inline-block';
+					char.style.opacity = '1';
+					char.style.transform = 'translateY(0)';
+				}, 170 * index);
+			});
+		}
+
+		function zeroPad(number, width) {
+			return String(number).padStart(width, '0');
+		}
+
+		function playQuizAudio(category, index) {
+			const audioPath = `${category}/${zeroPad(index, 2)}-q.wav`;
+			const audio = new Audio(audioPath);
+			audio.play();
 		}
 
 		function hideAllAnswers() {
