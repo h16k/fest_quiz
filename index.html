@@ -12,28 +12,25 @@
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
 
 	<style type="text/css">
-		body {
-			background-color: black;
+		section {
 			font-family: 'Noto Serif JP', serif;
 			font-style: normal;
 			font-weight: 400;
-			font-size: 48px;
+			font-size: 36px;
 			color: aqua;
+			height: 100%;
 		}
 
-		h2.subtitle {
+		.subtitle {
+			color: white;
 			font-size: 24px;
+			position: absolute;
+			top: 90%;
+			left: 90%;
 		}
 
 		p.answer {
 			display: none;
-		}
-
-		.char {
-			display: inline-block;
-			opacity: 0;
-			transform: translateY(1em);
-			transition: all 5s;
 		}
 
 		.question .char {
@@ -51,25 +48,33 @@
 		/* Box designs */
 		.red,
 		.white {
-			border-width: 5px;
+			border-width: 3px;
 			border-style: solid;
-			position: relative;
+			/* position: relative; */
 		}
 
 		.red {
 			border-color: rgba(214, 20, 20, 0.5);
-			width: 500px;
-			height: 500px;
+			width: 700px;
+			height: 700px;
 		}
 
 		.white {
 			border-color: rgba(216, 213, 213, 0.5);
-			width: 480px;
-			height: 480px;
+			width: 690px;
+			height: 690px;
+		}
+
+		.txt {
+			position: absolute;
+			top: 15%;
+			left: 21%;
+			width: 550px;
+			height: 650px;
 		}
 
 		/* Circle design & animation */
-		.reveal .circle {
+		.circle {
 			border-radius: 50%;
 			position: absolute;
 			top: 50%;
@@ -89,53 +94,6 @@
 				transform: translate(-50%, -50%) scale(1.05);
 			}
 		}
-
-		/* Slide number design & animation */
-		.slide-number-frame {
-			position: absolute;
-			bottom: 20px;
-			right: 20px;
-			width: 120px;
-			height: 50px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-
-		.slide-number {
-			font-size: 24px;
-			color: white;
-			z-index: 1;
-			opacity: 0;
-			transform: translateY(20px);
-			animation: fadeInSlideNumber 0.5s 0.5s forwards;
-		}
-
-		/* Red line design & animation */
-		.red-line {
-			width: 2px;
-			height: 0;
-			background-color: red;
-			position: absolute;
-			bottom: 0;
-			right: 0;
-			transform: rotate(-45deg);
-			transform-origin: bottom right;
-			animation: lineStretch 0.5s forwards;
-		}
-
-		@keyframes lineStretch {
-			to {
-				height: 100px;
-			}
-		}
-
-		@keyframes fadeInSlideNumber {
-			to {
-				opacity: 1;
-				transform: translateY(0);
-			}
-		}
 	</style>
 
 </head>
@@ -143,105 +101,192 @@
 <body>
 	<div class="reveal">
 		<div class="slides">
-			<section id="IT"></section>
-			<section id="Kanji">
-				<div class="circle red"></div>
-				<div class="circle white"></div>
-				<div class="red-line"></div>
-				<div class="slide-number-frame">
-					<svg viewBox="0 0 120 50" xmlns="http://www.w3.org/2000/svg">
-						<polygon points="0,0 30,50 90,50 120,0 90,0 60,50 30,0" fill="none" stroke="#666"
-							stroke-width="3" />
+			<section>
+				<section>
+					<img src="qr.png">
+					<div>
+						早押しボタン
+					</div>
+				</section>
+				<section>
+					<h3>ルール</h3>
+				</section>
+				<section>
+					<svg width="800" height="850" id="circularAnimation">
+						<!-- ここに円周上の棒のアニメーションを追加 -->
 					</svg>
-					<span class="slide-number">1</span>
-				</div>
+					
+				</section>
+				
 			</section>
-			<section id="Law"></section>
+			<section id="IT"></section>
 			<section id="Trivia"></section>
+			<section id="News"></section>
+			<section id="Kanji"></section>
+			<section id="Trivia2"></section>
+			<section id="Law"></section>
 		</div>
 	</div>
 
 	<script src="dist/reveal.js"></script>
-	<script src="plugin/notes/notes.js"></script>
-	<script src="plugin/markdown/markdown.js"></script>
-	<script src="plugin/highlight/highlight.js"></script>
 
 	<script>
+		document.addEventListener("DOMContentLoaded", initialize);
 
-		document.addEventListener("DOMContentLoaded", function () {
-			initializeReveal();
+		document.addEventListener('keydown', function(event) {
+    if (event.key === '1') {
+        startCircularAnimation();
+    }
+});
+
+function startCircularAnimation() {
+	const currentSlide = Reveal.getCurrentSlide();
+    const svg = currentSlide.querySelector('.circularAnimation');
+
+    // 棒の数、長さ、太さ、間隔などのパラメータを定義
+    const numberOfBars = 100;
+    const barLength = 20;  // 棒の長さを短く
+    const barWidth = 5;
+    const radius = 380;   // 半径を縮小
+    const center = { x: 400, y: 350 };  // SVGの中心点を少し上に移動
+    
+    for (let i = 0; i < numberOfBars; i++) {
+        setTimeout(() => {
+            // -90度で上を始点にする (Math.PI/2 を減算)
+            const angle = i * (360 / numberOfBars) * (Math.PI / 180) - Math.PI/2;
+            const x1 = center.x + radius * Math.cos(angle);
+            const y1 = center.y + radius * Math.sin(angle);
+            const x2 = center.x + (radius + barLength) * Math.cos(angle);
+            const y2 = center.y + (radius + barLength) * Math.sin(angle);
+
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute('x1', x1);
+            line.setAttribute('y1', y1);
+            line.setAttribute('x2', x2);
+            line.setAttribute('y2', y2);
+            line.setAttribute('stroke', 'white');
+            line.setAttribute('stroke-width', barWidth);
+            
+            svg.appendChild(line);
+        }, i * 100); // 100msの間隔で棒を追加
+    }
+}
+
+Reveal.addEventListener('slidechanged', function(event) {
+    const previousSlideSvg = event.previousSlide.querySelector('.circularAnimation');
+    if (previousSlideSvg) {
+        while (previousSlideSvg.firstChild) {
+            previousSlideSvg.firstChild.remove();
+        }
+    }
+});
+
+
+		const QUIZ_DATA = {
+			IT: [
+				["ノート、\u200B\u200B\u200B\u200Bデスクトップなどの種類があり、\u200B\u200B\u200B\u200B主にウェブ通信に用いられる、\u200B\u200B\u200B\u200B「パソコン」と略される電子機器は何でしょう？", "パーソナルコンピュータ"],
+				["パソコンのキーボードの上部に位置することが多い、F1からF12のキーのことを、「機能」を意味する英単語を使って何キーと呼ぶでしょう？", "ファンクションキー（function key）"],
+				["日本の法律では「不正指令電磁的記録に関する罪」としてその作成が処罰対象とされている、コンピュータに侵入して利用者に不利益をもたらす特殊なプログラムのことを一般に何というでしょう？", "コンピュータウイルス"],
+				["「電子国家」として知られ、世界で唯一国政選挙をオンライン投票で行える国である、リトアニア、ラトビアとともにバルト三国に数えられる北ヨーロッパの国はどこでしょう？", "エストニア"],
+				["日本では○○詐欺という形式で定着している、偽の情報を利用して個人情報や機密情報を騙し取る詐欺行為のことを、「釣り」を意味する英単語で何というでしょう？", "フィッシング（Phishing）"],
+				["日本で行政運営の円滑化を狙い、電子証明書とともに交付されている、12桁の番号が記載された、個人を識別するための電子カードは何でしょう？", "マイナンバーカード"],
+				["主にサイバー攻撃から企業を守る役割を担う、善意のハッカーのことを、ある色を用いた英語で何という？", "ホワイトハッカー"],
+				["グーグルのCEOであるエリックシュミットが提唱した、ネットワークを通して様々な計算資源やサービスを利用するシステムや技術のことを、「雲」などを意味する英単語で何というでしょう？", "クラウド,クラウドコンピューティング"],
+				["AppleやGoogleといったIT企業の一大拠点となっている、アメリカ・カリフォルニア州にある地域を、半導体などに使われる素材の名を冠して何というでしょう？", "シリコンバレー"],
+				["パソコンでタイピングを始める際に、左手・右手の人差し指が乗るFやJなどの突起のついたキーを基準とした初期姿勢のことを、「家」を意味する英単語を使って何ポジションと言うでしょう？", "ホームポジション"],
+				["X(旧Twitter)などのSNSで見かけられる、価値観の似た者同士で交流や共感をし合うことにより、特定の意見や思想が増幅する現象のことを、小部屋で音が反響することに例えて何現象というでしょう？", "エコーチェンバー現象"],
+			],
+			Trivia: [
+				["日本で、\u200B\u200B\u200B\u200B\u200B\u200Bふじみ野市\u200B\u200Bと\u200B\u200B富士見市が\u200B\u200B\u200B\u200Bともに存在する都道府県は\u200B\u200B\u200B\u200Bどこでしょう？", "埼玉県（さいたまけん）"],
+				["日本の中央省庁のうち、\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B1\u200B\u200B8\u200B\u200B8\u200B\u200B5年の\u200B\u200B\u200B\u200B\u200B\u200B内閣制度創設以降\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B一度も\u200B\u200B\u200B\u200B名前が変わっていない\u200B\u200B\u200B\u200B唯一の省は\u200B\u200B何省でしょう？", "外務省（がいむしょう）"],
+				["1\u200B\u200B9\u200B\u200B9\u200B\u200B7\u200B\u200B年\u200B\u200Bに映画\u200B\u200B『タイタニック』\u200B\u200Bに更新されるまで\u200B\u200B世界\u200B\u200B歴代\u200B\u200B興行\u200B\u200B収入\u200B\u200B\u200B\u200B1位\u200B\u200Bの記録を\u200B\u200B持っていた、\u200B\u200B\u200B\u200Bマイケル・クライトン原作、\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200Bスティーヴン・スピルバーグ監督の、\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B恐竜を\u200B\u200B\u200B\u200Bモチーフにした映画は何でしょう？", "ジュラシック・パーク"],
+				["東京\u200B\u200B六大学のうち、\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B大学名に\u200B\u200B日本の\u200B\u200B元号が\u200B\u200B使われているのは\u200B\u200B\u200B\u200B\u200B\u200B明治\u200B\u200B大学と\u200B\u200B\u200B\u200B何大学でしょう？", "慶應義塾（けいおうぎじゅく）"],
+				["本名を\u200B\u200B\u200B\u200Bモハンダス・カラムチャンドといい、\u200B\u200B\u200B\u200B\u200B\u200B一般には\u200B「偉大なる魂」\u200B\u200B\u200B\u200Bという意味の「マハトマ」\u200B\u200Bの尊称を付けて\u200B\u200B呼ばれる、\u200B\u200B\u200B\u200B\u200Bイギリス統治下の\u200B\u200B\u200B\u200Bインドで非暴力・\u200B\u200B不服従を掲げた\u200B\u200B\u200B\u200B\u200B反英運動を展開し\u200B\u200B\u200B\u200B\u200B\u200B独立運動の中心となった\u200B\u200B\u200B\u200B\u200B\u200B政治家は誰でしょう？", "ガンジー"],
+				["小さな違いは\u200B\u200Bあるが、\u200B\u200B\u200B\u200B\u200B\u200B大体が\u200B\u200B\u200B\u200B同じであるということを、\u200B\u200B\u200B\u200B\u200B\u200B漢字の\u200B\u200B\u200B\u200B「大」と「小」を使った四字熟語で\u200B\u200B何というでしょう？", "大同小異（だいどうしょうい）"],
+				["河川に\u200B\u200Bよって運ばれた土砂が\u200B\u200B河口付近に\u200B\u200B堆積することにより形成された地形で、\u200B\u200B\u200B\u200B別名\u200B\u200B\u200B\u200B「デルタ」\u200B\u200Bと呼ばれる地形の名称は\u200B\u200B何でしょう？", "三角州（さんかくす）"],
+				["テニスやゴルフで、\u200B\u200B1年のうちに\u200B\u200B四大大会の\u200B\u200Bすべてを制覇することを\u200B\u200B英語で何というでしょう？", "グランドスラム"],
+				["英語で「居眠り」という意味がある、\u200B\u200B\u200B\u200B\u200B\u200B一度\u200B\u200Bアラームを止めてもまた繰り返しアラームが鳴る\u200B\u200B目覚まし時計の\u200B\u200B機能を\u200B\u200B何というでしょう？", "スヌーズ"],
+				["起動しなくなったスマホ\u200B\u200Bなどの電子機器を指す\u200B\u200B\u200B\u200B俗語にもなっている、\u200B\u200B\u200B\u200B書道で\u200B\u200B半紙を\u200B\u200B固定するために使う重しを何というでしょう？", "文鎮（ぶんちん）"],
+			],
+
+			News: [
+				[`今年の9月に、\u200B\u200B\u200B\u200B\u200B東海道\u200B\u200B\u200B新幹線の\u200B\u200B\u200B「のぞみ」\u200B\u200B\u200B1両を\u200B\u200B貸し切り、\u200B\u200B\u200B\u200B\u200B\u200B史上初めて\u200B\u200B\u200B新幹線の\u200B\u200B車内で行われた\u200B\u200B催しは次のうちどれでしょう？\u200B\u200B\u200B\u200B\u200B\u200B\n\n１．\u200B\u200B\u200Bプロレス\u200B\u200B\u200B\u200B\u200B\n２．\u200B\u200B\u200B\u200B剣道\u200B\u200B\u200B\u200B\u200B\n３．\u200B\u200B\u200B相撲`, "１．"],
+				["今年の5月のG7サミット\u200B\u200B\u200B\u200B\u200B\n（主要国\u200B\u200B\u200B首脳\u200B\u200B会議）\u200B\u200B\u200B\u200Bは、\u200B\u200B\u200B\u200B\u200B\u200B\nどの都道府県で\u200B\u200B\u200B\u200B開催されたでしょう？\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\n\n１．\u200B\u200B\u200B\u200B東京都\n\u200B\u200B\u200B\u200B\u200B２．\u200B\u200B\u200B広島県\n\u200B\u200B\u200B\u200B３．\u200B\u200B\u200B\u200B京都府", "２．"],
+				["今年9月にフランスで開催されたのは、\u200B\u200B\u200B\u200B\u200B次のうち\u200B\u200Bどの競技の\u200B\u200B\u200Bワールドカップでしょう？\n\n\u200B\u200B\u200B\u200B\u200B\u200B１．\u200B\u200B\u200B\u200Bラグビー、\u200B\u200B\u200B\u200B２．\u200B\u200B\u200Bサッカー、\u200B\u200B\u200B\u200B３．\u200B\u200B\u200Bバスケ", "１．"],
+				["今年、\u200B\u200B\u200Bユニークで考えさせられる研究に送られる\u200B\u200B\u200B\u200B「イグ・\u200B\u200B\u200Bノーベル賞」\u200B\u200B\u200B\u200Bのある部門を\u200B\u200B日本人が受賞しましたが、\u200B\u200B\u200B\u200B\u200B\u200Bその内容は\u200B\u200B次のうちどれでしょう？\u200B\n\n\u200B\u200B\u200B\u200B１．\u200B\u200B\u200B\u200B\u200B\u200B電流を\u200B\u200B使った\u200B\u200B\u200B味覚の変化\u200B\u200B\u200B\u200B\u200B\u200B\u200B\n２．\u200B\u200B\u200B\u200B\u200B睡眠中の\u200B\u200B\u200B夢の映像化\u200B\n\u200B\u200B\u200B\u200B\u200B\u200B\u200B３．\u200B\u200B\u200B\u200B\u200B遠隔での\u200B\u200B握手の\u200B\u200B疑似体験", "１．"],
+				["今年の7月\u200B\u200B12日に、\u200B\u200B\u200B\u200B\u200B\u200B\u200B国内の\u200B\u200B最高気温\u200B\u200B39.1℃\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200Bを記録した都道府県は\u200B\u200B\u200B\u200B\u200B\u200B\u200B次のうちどこでしょう？\u200B\u200B\u200B\u200B\u200B\n\n１．\u200B\u200B\u200B\u200B\u200B\u200B京都府\n\u200B\u200B\u200B\u200B\u200B２．\u200B\u200B\u200B\u200B\u200B埼玉県\n\u200B\u200B\u200B\u200B\u200B３．\u200B\u200B\u200B\u200B\u200B\u200B東京都", "３．（八王子）"],
+				["10歳の\u200B\u200B\u200Bころに筋疾患の\u200B\u200B\u200B\n「先天性\u200B\u200Bミオパチー」\u200Bと診断された\u200B\u200B\u200B神奈川県在住の作家で、\u200B\u200B\u200B\u200B\u200B\u200B\u200B今年の芥川賞\u200B\u200B\u200B受賞作である\u200B\u200B\u200B\u200B\u200B\u200B『ハンチバック』\u200B\u200B\u200B\u200Bの作者は誰でしょう？","市川沙央（さおう）"],
+				["9月に発売された\u200B\u200BiPhone15\u200B\u200B\u200B\u200Bで新たに採用された\u200B充電端子\u200B\u200B\u200B\u200B\u200Bとして話題になった、\u200B\u200B\u200B\u200B\u200B\u200B平らな\u200B楕円の形をしており、\u200B\u200B\u200B\u200B\u200B\u200B両面\u200B\u200B\u200Bリバーシブルで利用できることが\u200B特徴の\u200BUSB端子\u200B\u200B\u200B\u200Bは何でしょう？", "type-C"],
+				["今年の夏の\u200B\u200B\u200B甲子園から\u200B\u200B\u200B導入された、\u200B\u200B\u200B\u200B\u200B\u200B\u200B五回終了後に\u200B\u200B\u200B身体の冷却や\u200B\u200B\u200B水分補給\u200B\u200B\u200Bを行う時間のことを、\u200B\u200B\u200B\u200B\u200B\u200B「冷却する」\u200B\u200B\u200Bという意味の英単語\u200B\u200Bを用いて何タイムというでしょう？", "クーリングタイム"],
+				["今年7月、\u200B\u200B\u200B\u200B\u200B\u200BTwitterの名称が\u200B\u200B\u200B\u200B\u200B\u200BXへと変更されたことは世界中で話題となりましたが、\u200B\u200B\u200B\u200B\u200B\u200B\u200Bその改名後の\u200B\u200BXの\u200B\u200B執行会長\u200B\u200B\u200B\u200B兼CTOとなったのは誰でしょう？", "イーロン・マスク"],
+				["今年9月に\u200B\u200B\u200B\日本テレビ\u200B\u200Bが買収したことでも話題になった、\u200B\u200B\u200B\u200B\u200B\u200B「君たちはどう生きるか」\u200B\u200B\u200B\u200B\u200B\u200B「崖の上のポニョ」\u200B\u200B\u200B\u200B\u200B\u200B「千と\u200B\u200B千尋の\u200B\u200B\u200B\u200B神隠し」\u200B\u200B\u200B\u200Bなどを手掛けるアニメスタジオはどこでしょう？", "スタジオジブリ"],
+			],
+			
+			Kanji: [
+				["漢字では\u200B\u200B「西班牙」\u200B\u200Bと表される国で、\u200B\u200B\u200B\u200Bパエリア\u200B\u200Bなどの料理で知られる、\u200B\u200B\u200B\u200B\u200B\u200B首都をマドリードに置くヨーロッパのイベリア半島\u200B\u200Bにある国はどこでしょう？", "スペイン"],
+				["漢字では\u200B\u200B「大蒜」\u200B\u200Bと表記される、\u200B\u200B\u200B\u200B香りが強く、\u200B\u200B\u200B\u200B\u200B\u200B強壮・\u200B\u200Bスタミナ増進\u200B\u200B作用がある\u200B\u200Bと信じられ、\u200B\u200B\u200B\u200B\u200B\u200B十字架とともに\u200B\u200B\u200B\u200Bドラキュラが\u200B\u200B苦手とすることでも知られる野菜はなんでしょう？", "にんにく"],
+				["漢字では\u200B\u200B「庭球」\u200B\u200Bと表記される\u200B\u200Bスポーツで、\u200B\u200B\u200B\u200B二人または二組のプレイヤーが\u200B\u200Bネット越しにラケットでボールを打ち合う、\u200B\u200B\u200B\u200B\u200B\u200B錦織圭\u200B\u200Bなどの選手が活躍する\u200B\u200Bスポーツは何でしょう？", "テニス"],
+				["漢字では\u200B\u200B「瘡蓋」\u200B\u200Bと表される、\u200B\u200B\u200B\u200B\u200B\u200B傷が治る過程\u200B\u200Bで形成される、\u200B\u200B\u200B\u200B\u200B\u200B皮膚表面を\u200B\u200B覆う\u200B\u200B硬い皮\u200B\u200Bのことを何というでしょう？", "かさぶた"],
+				["漢字では\u200B\u200B「鳳梨」\u200B\u200Bと表記される、\u200B\u200B\u200B\u200Bアナナスの仲間で、\u200B\u200B\u200B\u200B\u200B\u200B「松ぼっくり」\u200B\u200Bという意味の英語に由来する果物\u200B\u200Bはなんでしょう？", "パイナップル"],
+				["漢字では\u200B\u200B「駱駝」\u200B\u200Bと表される、\u200B\u200B\u200B\u200B\u200B\u200B乾燥した環境に\u200B\u200B適応しており、\u200B\u200B\u200B\u200B\u200B\u200B水を飲まずに\u200B\u200B数日間は耐えられることから、\u200B\u200B\u200B\u200B\u200B\u200B砂漠の運び屋\u200B\u200Bとして親しまれている\u200B\u200B動物は\u200B\u200Bなんでしょう？", "ラクダ"],
+				["漢字では\u200B\u200B「山葵」\u200B\u200Bと表記され、\u200B\u200B\u200B\u200Bその可食部は\u200B\u200B\u200B食欲増進作用\u200B\u200Bのほか、\u200B\u200B\u200B\u200B\u200B\u200B抗菌作用\u200B\u200B\u200B\u200Bがあることでも知られる、\u200B\u200B\u200B\u200B\u200B\u200B日本料理において\u200B\u200B寿司\u200B\u200Bや刺身\u200B\u200Bと一緒に\u200B\u200B食されることが多い\u200B\u200B植物はなんでしょう？", "ワサビ"],
+				["漢字では\u200B\u200B「黒子」\u200B\u200Bとも表記される、\u200B\u200B\u200B\u200B\u200B\u200B皮膚表面に\u200B\u200B\u200B現れる濃い褐色の\u200B\u200B色素斑\u200B\u200Bを何というでしょう？", "ほくろ"],
+				["漢字では\u200B\u200B「占地・湿地」\u200B\u200Bと表記されるきのこで、\u200B\u200B\u200B\u200B\u200B\u200B白や茶色の笠を持ち、\u200B\u200B\u200B\u200B\u200B\u200Bその美味しさから、\u200B\u200B\u200B\u200B「香りマツタケ、\u200B\u200B\u200B\u200B味○○」\u200B\u200B\u200B\u200Bと称されるキノコは\u200B\u200Bなんでしょう？", "シメジ"],
+				["漢字では\u200B\u200B「百足」\u200B\u200Bと表記され、\u200B\u200B\u200B\u200B\nゴキブリを\u200B\u200B捕食することから\u200B\u200B益虫\u200B\u200Bとみなされる\u200Bこともある、\u200B\u200B\u200B\u200B\u200B細長い体型と\u200B\u200B多くの脚が\u200B\u200B特徴的な\u200B\u200B肉食の節足動物は\u200B\u200Bなんでしょう？", "ムカデ"],
+			],
+			
+			Trivia2: [
+				["企業からの不採用通知のことを、\n\u200B\u200B\u200B\u200B\u200Bそのメールの最後に\u200B\u200B\u200B\u200B書かれることが多い表現にちなんで、\n\u200B\u200B\u200B\u200B\u200B俗に何メールというでしょう？","お祈りメール"],
+				["四角形の内角の和は、\u200B\u200B\u200B\u200B\u200B\n形や面積によらず\u200B\u200B\u200B\u200B\u200B\u200B\n何度になるでしょう？","360度"],
+				["EUからのイギリス離脱を、\u200B\u200B\u200B\u200B\u200B\u200B\n「イギリス」と「退場」\u200B\u200Bを意味する\u200B\u200B英語の\u200B\u200B組み合わせで俗に何というでしょう？","ブレグジット(Brexit)"],
+				["ノーベル賞の６部門のうち、\u200B\u200B\u200B\u200B\u200B\u200B\n1935年に\u200B\u200B\u200B\u200Bイレーヌ＝\u200B\u200Bジュリオ＝\u200B\u200Bキュリー\u200B\u200B\u200B\u200Bとその夫\u200Bフレデリック＝\u200Bジュリオ＝\u200Bキュリーの夫妻が共同受賞したのはノーベル何賞でしょう？","ノーベル化学賞"],
+				["０から１の間であらわされ、\n\u200B\u200B\u200B\u200B\u200B\u200Bその値が１に近づくほど\u200B\u200B\u200B\u200B\u200B\u200B格差が大きいことを示す、\n\u200B\u200B\u200B\u200B\u200B\u200B主に\u200B\u200B取得分配\u200B\u200B\u200B\u200Bや資産\u200B\u200B\u200Bなどの不平等さ\u200B\u200B\u200Bを測る指標のことを、\u200B\u200B\u200B\u200B考案した\u200B\u200B\u200Bイタリアの\u200B\u200B統計学者の名をとって\u200B\u200B\u200B\u200B何係数というでしょう？","ジニ係数"],
+				["英語で「特異点」\u200B\u200Bを意味し、\u200B\u200B\u200B\u200B\u200B\u200B\n到来が予期されている時期から\u200B\u200B\u200B\u200B\u200B\u200B\n「2045年問題」\u200B\u200Bなどといわれることもある、\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B人工知能が\u200B\u200B人間の知能を\u200B\u200B上回り、\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B文明に\u200B\u200B劇的な\u200B\u200B変化を\u200B\u200B生じさせる\u200B\u200Bという\u200B\u200B時点のことを指す言葉は何でしょう？","シンギュラリティ(singularity)"],
+				["肌の手入れを「スキンケア」\nといいますが、\u200B\u200B\u200B\u200B\u200B\u200B特にニキビに関する手入れのことを\u200B\u200B\u200B\u200B「ニキビ」を意味する英語を使って\u200B\u200B\u200B\u200B何ケアというでしょう？","アクネケア"],
+				["プロレスで、\u200B\u200B\u200B\u200B\u200B\u200B悪役は「ヒール」と呼ばれますが、\u200B\u200B\u200B\u200B\u200B\u200B善玉として振る舞うレスラーのことを、\u200B\u200B\u200B\u200B\u200B\u200B「童顔」を意味する英語で何というでしょう？","ベビーフェイス"],
+				["日本の中央省庁で、\u200B\u200B\u200B\u200B\u200B\u200B幼稚園\u200B\u200B\u200B\u200Bを管轄しているのは\u200B\u200B\u200B\u200B文部科学省ですが、\u200B\u200B\u200B\u200B保育園\u200B\u200B\u200B\u200Bを管轄しているのは\u200B\u200B\u200B\u200B何省でしょう？","厚生労働省"],
+				["簡単なことでも\u200B\u200B初めて行うのは\u200B\u200B難しい\u200B\u200Bということを、\u200B\u200B\u200B\u200B\u200B\u200Bイタリアの航海者\u200B\u200Bの名前\u200B\u200Bを使って\u200B\u200B\u200B\u200B「何\u200B\u200Bの卵」というでしょう？","コロンブスの卵"],
+			],
+			Law: [
+				["一般に、\u200B\u200B\u200B\u200B六法\u200B\u200Bと呼ばれる6つの\u200B\u200B法律は、\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B民事訴訟法、\u200B\u200B\u200B\u200B\u200B\u200B\u200B刑事訴訟法、\u200B\u200B\u200B\u200B\u200B\u200B\u200B商法、\u200B\u200B\u200B\u200B\u200B刑法、\u200B\u200B\u200B\u200B民法と\u200B\u200B\u200B\u200Bあと1つは何でしょう？", "憲法"],
+				["東京\u200B\u200B・\u200B\u200B\u200B\u200B大阪\u200B\u200B・\u200B\u200B名古屋\u200B・\u200B広島\u200B\u200B\u200B・\u200B\u200B\u200B福岡\u200B\u200B\u200B・\u200B\u200B\u200B仙台\u200B\u200B\u200B・\u200B\u200B\u200B札幌\u200B\u200B\u200B・\u200B\u200B\u200B高松\u200B\u200B\u200Bの8ヶ所に\u200B\u200B設置されている裁判所で、\u200B\u200B\u200B\u200B\u200B\u200B地方裁判所の上、\n\u200B\u200B\u200B\u200B\u200B\u200B最高裁判所の\u200B\u200B下\u200B\u200Bに位置する\u200B裁判所は何でしょう？", "高等裁判所"],
+				["日本国憲法では、\u200B\u200B\u200B\u200B\u200B\u200B\u200Bもっとも重要な基本原理として、\u200B\u200B\u200B\u200B\u200B\u200B\u200B国民主権主義\u200B\u200B\u200Bを採用していますが、\u200B\u200B\u200B\u200B\u200B\u200B明治憲法下では\u200B\u200B\u200B何主権だったでしょう？", "天皇主権"],
+				["国会は\u200B立法権、\u200B\u200B\u200B\u200B\u200B\u200B内閣は\u200B行政権、\u200B\u200B\u200B\u200B\u200B\n裁判所は\u200B司法権、\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200Bこの\u200B権力が\u200B\u200B分散された状況\u200B\u200Bを何というでしょう？", "三権分立"],
+				["外国人が\u200B\u200B日本国籍を\u200B\u200B\u200B取得するためには、\u200B\u200B\u200B\u200B\u200B\u200B\u200B少なくとも\u200B\u200B何年以上\u200B\u200B継続して\u200B\u200B住んでいる\u200B必要があるでしょう？", "５年"],
+				["「国民の祝日に関する法律」\u200B\u200B\u200B\u200Bにおいて、\u200B\u200B\u200B\u200B\u200B\u200B「母に感謝すること」\u200B\u200B\u200B\u200B\u200B\u200Bおよび\u200B\u200B\u200B「こどもの人格を重んじ、\u200B\u200B\u200B\u200B\u200B\u200Bこどもの幸福をはかる」\u200B\u200B\u200B\u200B\u200B\u200B\u200Bという趣旨が定められている祝日\u200B\u200B\u200Bは何の日でしょう？", "こどもの日"],
+				["日本において、\u200B\u200B\u200B\u200B\u200B著作権の\u200B\u200B\u200B保護期間は、\u200B\u200B\u200B\u200B\u200B原則として\u200B\u200B著作者の死後\u200B\u200B何年までとされているでしょう？", "７０年"],
+				["訪問販売、\u200B\u200B\u200B\u200B\u200B\u200B通信販売、\u200B\u200B\u200B\u200B\u200B\u200B電話勧誘販売\u200B\u200B\u200B\u200B\u200B\u200Bなどを対象に、\u200B\u200B\u200B\u200B\u200B\u200B消費者\u200B\u200B\u200Bを守るためのクーリングオフ\u200B\u200B\u200B\u200Bなどのルールを定めている法律は\u200B\u200B\u200B\u200B次のうちどれでしょう？\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\n１．\u200B\u200B商法、\u200B\u200B\u200B\u200B\u200B\u200B\u200B２．\u200B\u200B電子消費者契約法、\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B３．\u200B\u200B\u200B\u200B特定商取引法、\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B４．\u200B\u200B\u200B\u200B不正競争防止法", "３．"],
+				["知的財産\u200B\u200B\u200Bを保護\u200B\u200Bする\u200B\u200B\u200B法律のうち、\u200B\u200B\u200B\u200B\u200B事業者の\u200B\u200B取り扱う商品\u200B\u200Bやサービスを、\u200B\u200B\u200B\u200B\u200B\u200B\u200B他者の商品\u200B\u200B\u200Bやサービスと区別するための文字、\u200B\u200B\u200B\u200B\u200B\u200B図形、\u200B\u200B\u200B\u200B\u200B\u200B記号\u200Bなどを保護する法律は次のうちどれでしょう？\n\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B１．\u200B\u200B\u200B\u200B\u200B\u200B意匠法、\u200B\u200B\u200B\u200B\u200B\u200B\u200B２．\u200B\u200B\u200B\u200B\u200B商標法、\u200B\u200B\u200B\u200B\u200B\u200B\n３．\u200B\u200B\u200B\u200B\u200B\u200B\u200B特許法、\u200B\u200B\u200B\u200B\u200B\u200B\u200B４．\u200B\u200B\u200B\u200B\u200B著作権法", "２．"],
+				["公正\u200B\u200Bかつ\u200B\u200B自由な競争\u200B\u200Bを促進し、\u200B\u200B\u200B\u200B\u200B\u200B\n事業者が\u200B\u200B自主的な判断で\u200B\u200B\u200B自由に活動\u200B\u200Bできるようにすることを目的に\u200B\u200B\u200B\u200B制定された、\u200B\u200B\u200B\u200B\u200B\u200Bカルテル\u200B\u200Bや入札談合\u200B\u200Bを禁止する法律は\u200B\u200B\u200B\u200B次のうちどれでしょう？\n\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B\u200B１．\u200B\u200B\u200B\u200B\u200B特定商取引法、\u200B\u200B\u200B\u200B\u200B\u200B２．\u200B\u200B\u200B\u200B\u200B\u200B独占禁止法、\u200B\u200B\u200B\u200B\u200B\u200B\n３．\u200B\u200B\u200B\u200B\u200B\u200B労働基準法、\u200B\u200B\u200B\u200B\u200B\u200B\u200B４．\u200B\u200B\u200B\u200B\u200B商法", "２．"],
+			],
+
+
+		};
+
+		function initialize() {
+			setupReveal();
 			setupQuizzes();
 			setupEventListeners();
-		});
+		}
 
-		function initializeReveal() {
+		function setupReveal() {
 			Reveal.initialize({
 				hash: true,
 				slideNumber: true,
-				plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
-				keyboard: { 80: null }
+				// plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+				keyboard: { 80: null },
+				center: true, //
+				controls: false,
 			});
 		}
 
-		const quizzes = {
-			// ... 既存のクイズのデータ ...
-			IT: [
-				["フェイスブックを創設した人物の名前は？", "マーク・ザッカーバーグ"],
-				["マイクロソフトを創設した2人の主要な創業者は？", "ビル・ゲイツとポール・アレン"],
-				["PCとは何の略称？	", "Personal Computer (パーソナルコンピュータ)	"],
-				["電子メールやホームページの閲覧を介して、コンピュータに侵入する特殊なプログラムのことを何という？	", "コンピュータウィルス"],
-				["「電子政府」、オンライン投票の制度で有名なバルト三国の一国はどこ？", "エストニア"],
-				["偽のウェブサイトを作り、相手の情報を抜き取る行為のことを何詐欺という？", "Phishing(フィッシング)"],
-				["行政運営の円滑化を狙い交付されている、12桁の番号が記載された電子カードは何という？", "マイナンバーカード"],
-				["主にサイバー攻撃から企業を守る役割を担う、“善意”のハッカーのことをある色を用いて何という？", "ホワイトハッカー"],
-				["X(旧ツイッター)などで見かけられる、狭いコミュニティの中で同じような意見ばかりが返ってきて増幅していく現象のことを何というか？", "エコチャンバー現象"],
-				["URLでよく見かけるhttpsのうち、sは何を意味している？", "Secure, 通信が暗号化されていることを示している。"],
-				["アメリカ・カリフォルニア州にある、IT企業が集積している地域のことを何というか？", "Silicon Valley (シリコンバレー)	"],
-
-			],
-			Kanji: [
-				["月極", "つきぎめ"],
-				["市井", "しせい"],
-				["代替", "だいたい"],
-				["続柄", "つづきがら"],
-				["貼付", "ちょうふ"],
-				["御利益", "ごりやく"],
-				["漸く", "ようや(く)"],
-				["暫く", "しばら(く)"],
-				["早急", "さっきゅう"],
-				["詩歌", "しいか"],
-			],
-
-			Law: [
-				["裁判官が過去の同様の事件における判決に拘束されることをなんというか。", "先例拘束性の原則"],
-				["社会の一員として、互いに相手方の信頼を裏切らないように､誠意をもって行動しなければならない原則をなんというか。", "信義誠実の原則"],
-				["個人や法人､不動産など実体法上の重要な権利や義務などを社会に向けて公示し､それらを保護した上で取引を円滑にするために定められている法制度をなんというか。", "登記"],
-				["借金に苦しむ人がいたずらに増えないように､上限利息を設定する法律をなんというか。", "利息制限法"],
-				["事業者が用意する多数の取引を行うためにあらかじめ定型化された契約内容をなんというか。", "約款"],
-				["日本語では「意見公募手続」ともいう、行政機関が規則の制定や改廃などを行う際に、広く一般に改善案などの意見を求める手続きのことを英語で何というでしょう？", "パブリックコメント"],
-			],
-
-			Trivia: [
-				["日本で、ふじみ野市と富士見市がともに存在する都道府県はどこでしょう？", "埼玉県（さいたまけん）"],
-				["日本の中央省庁のうち、1\u200B885年\u200Bの内閣\u200B制度創設\u200B以降\u200B\u200B一度も\u200B名前が変わっていない唯一の省は\u200B何省でしょう？", "外務省（がいむしょう）"],
-				["1997年に映画『タイタニック』に更新されるまで世界歴代興行収入1位の記録を持っていた、マイケル・クライトン原作、スティーヴン・スピルバーグ監督の、恐竜をモチーフにした映画は何でしょう？", "ジュラシック・パーク"],
-				["東京六大学のうち、\u200B\u200B大学名に日本の元号が使われているのは\u200B\u200B\u200B明治大学と何大学でしょう？", "慶應義塾（けいおうぎじゅく）"],
-				["天下三名槍に数えられる、飛んできた虫が当たっただけで切れたことからその虫の名が付いたという、本多忠勝の愛槍の名前は何でしょう？", "蜻蛉切（とんぼきり）"],
-				["小さな違いはあるが、\u200B\u200B大体が同じであるということを、漢字の「大」と「小」を使った四字熟語で何というでしょう？", "大同小異（だいどうしょうい）"],
-				["河川によって運ばれた土砂が河口付近に堆積することにより形成された地形で、\u200B\u200B別名\u200B\u200B「デルタ」と呼ばれる地形の名称は何でしょう？", "三角州（さんかくす）"],
-				["テニスやゴルフで、1年のうちに四大大会のすべてを制覇することを英語で何というでしょう？", "グランドスラム"],
-				["英語で「居眠り」という意味がある、一度アラームを止めてもまた繰り返しアラームが鳴る目覚まし時計の機能を何というでしょう？", "スヌーズ"],
-				["起動しなくなったスマホなどの電子機器を指す俗語にもなっている、書道で半紙を固定するために使う重しを何というでしょう？", "文鎮（ぶんちん）"],
-			]
-		};
-
 		function setupQuizzes() {
-			for (let [category, quizList] of Object.entries(quizzes)) {
-				addQuizzesToSlides(category, quizList);
+			for (let [category, quizList] of Object.entries(QUIZ_DATA)) {
+				populateSlidesWithQuizzes(category, quizList);
 			}
 		}
 
-		function addQuizzesToSlides(category, quizzes) {
+		function populateSlidesWithQuizzes(category, quizzes) {
 			const section = document.getElementById(category);
 			quizzes.forEach((quiz, index) => {
 				const slide = createQuizSlide(category, quiz, index);
@@ -252,61 +297,69 @@
 		function createQuizSlide(category, quiz, index) {
 			const slide = document.createElement("section");
 			slide.innerHTML = `
-        <h2 class="subtitle">${category}（${index + 1}）</h2>
-        <p class="question">${splitChars(quiz[0])}</p>
-        <p class="answer">${quiz[1]}</p>
-    `;
+			<svg width="800" height="800" class="circularAnimation">
+						<!-- ここに円周上の棒のアニメーションを追加 -->
+					</svg>
+				<div class="circle red"></div>
+				<div class="circle white"></div>
+				<div class="txt">
+                <p class="question">${formatText(quiz[0])}</p>
+                <p class="answer">${quiz[1]}</p>
+				</div>
+
+				<div class="subtitle">${category}（${index + 1}）</div>
+
+            `;
 			return slide;
 		}
 
-		function splitChars(str) {
-			return str.split('').map(char => `<span class="char">${char}</span>`).join('');
+		function formatText(str) {
+			return str.split('').map(char => {
+				if (char === '\n') {
+					return '<br>';  // 改行文字の場合、<br>タグを返します。
+				} else {
+					return `<span class="char">${char}</span>`;
+				}
+			}).join('');
 		}
 
 		function setupEventListeners() {
-			document.addEventListener('keydown', handleKeydown);
+			document.addEventListener('keydown', handleKeyEvents);
 			Reveal.addEventListener('slidechanged', hideAllAnswers);
 		}
 
-		function handleKeydown(event) {
+		function handleKeyEvents(event) {
 			const currentSlide = Reveal.getCurrentSlide();
 			const category = currentSlide.parentNode.id;
 			const index = Array.from(currentSlide.parentNode.children).indexOf(currentSlide) + 1;
 
-			if (event.key.toLowerCase() === 'a') {
-				displayAnswer(currentSlide);
-			}
-
-			if (event.key.toLowerCase() === 'x') {
-				revealQuestionChars(currentSlide);
-				playQuizAudio(category, index);
-			}
+			if (event.key.toLowerCase() === 'a') displayAnswer(currentSlide);
+			if (event.key.toLowerCase() === 'x') revealQuestionAndPlayAudio(currentSlide, category, index);
 		}
 
 		function displayAnswer(slide) {
 			const answer = slide.querySelector('.answer');
-			if (answer) {
-				answer.style.display = 'block';
-			}
+			if (answer) answer.style.display = 'block';
+		}
+
+		function revealQuestionAndPlayAudio(slide, category, index) {
+			revealQuestionChars(slide);
+			playAudio(category, index);
 		}
 
 		function revealQuestionChars(slide) {
 			const chars = slide.querySelectorAll('.question .char');
 			chars.forEach((char, index) => {
 				setTimeout(() => {
-					char.style.display = 'inline-block';
+					char.style.display = 'inline';
 					char.style.opacity = '1';
-					char.style.transform = 'translateY(0)';
-				}, 170 * index);
+					char.style.transform = 'translateY(1)';
+				}, 120 * index);
 			});
 		}
 
-		function zeroPad(number, width) {
-			return String(number).padStart(width, '0');
-		}
-
-		function playQuizAudio(category, index) {
-			const audioPath = `${category}/${zeroPad(index, 2)}-q.wav`;
+		function playAudio(category, index) {
+			const audioPath = `speech/${category}/${String(index).padStart(2, '0')}-q.wav`;
 			const audio = new Audio(audioPath);
 			audio.play();
 		}
