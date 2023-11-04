@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>reveal.js</title>
+	<link rel="stylesheet" href="dist/reset.css">
+	<link rel="stylesheet" href="dist/reveal.css">
+	<link rel="stylesheet" href="dist/theme/black.css">
+	<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+
+	<style type="text/css">
+		section {
+			font-family: 'Noto Serif JP', serif;
+			font-style: normal;
+			font-weight: 400;
+			font-size: 36px;
+			color: aqua;
+			height: 100%;
+		}
+
+		.subtitle {
+			color: white;
+			font-size: 24px;
+			position: absolute;
+			top: 90%;
+			left: 90%;
+		}
+
+		p.answer {
+			display: none;
+		}
+
+		.question .char {
+			display: none;
+		}
+
+		.reveal .answer {
+			color: rgb(83, 176, 206);
+		}
+
+		.reveal h1 {
+			font-size: 2em;
+		}
+
+		/* Box designs */
+		.red,
+		.white {
+			border-width: 3px;
+			border-style: solid;
+			/* position: relative; */
+		}
+
+		.red {
+			border-color: rgba(214, 20, 20, 0.5);
+			width: 700px;
+			height: 700px;
+		}
+
+		.white {
+			border-color: rgba(216, 213, 213, 0.5);
+			width: 690px;
+			height: 690px;
+		}
+
+		.txt {
+			position: absolute;
+			top: 15%;
+			left: 21%;
+			width: 550px;
+			height: 650px;
+		}
+
+		/* Circle design & animation */
+		.circle {
+			border-radius: 50%;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			animation: wave 3s infinite;
+		}
+
+		@keyframes wave {
+
+			0%,
+			100% {
+				transform: translate(-50%, -50%) scale(1);
+			}
+
+			50% {
+				transform: translate(-50%, -50%) scale(1.05);
+			}
+		}
+	</style>
+
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<section>
+					<h1>早押しクイズ</h1>
+					<img src="クイズ.png" height="500px">
+				</section>
+				<section>
+					<img src="qr.png">
+					<div>
+						早押しボタン
+					</div>
+				</section>
+				<section>
+					<h3>ルール</h3>
+					<p>
+						IT、雑学、時事、難読漢字、法律などのジャンルの問題が１０問ずつ出題されます。
+					</p>
+					<p>
+						音声として読み上げられると同時に、問題文がアニメーションで表示されるので、正解が分かったタイミングでボタンを押してください。
+					</p>
+					<p>
+						最も早く正答した方には10点が追加されます。
+						誤答した場合には15点が引かれ、次に早かった方に回答権が移ります。
+					</p>
+					<p>
+						最終的に最も点数の高かった方が勝ちとなります。
+					</p>
+				</section>
+				<section>
+					<svg width="800" height="850" class="circularAnimation">
+						<!-- ここに円周上の棒のアニメーションを追加 -->
+					</svg>
+
+				</section>
+
+			</section>
+			<section id="IT"></section>
+			<section id="Sports"></section>
+			<section id="Trivia"></section>
+			<section id="Kanji"></section>
+			<section id="Trivia2"></section>
+			<section id="Entertainment"></section>
+		</div>
+	</div>
+
+	<script src="dist/reveal.js"></script>
+
+	<script>
+
+		const QUIZ_DATA = {
+			IT: [
+				["AppleやGoogleといったIT企業の\u200B一大拠点\u200B\u200B\u200B\u200Bとなっている、\u200B\u200B\u200B\u200B\u200Bアメリカ・\u200B\u200Bカリフォルニア州\u200Bにある地域を、\u200B\u200B\u200B\u200B\u200B半導体\u200Bなどに使われる素材\u200Bの名を冠して\u200B何というでしょう？", "シリコンバレー"],
+			],
+			Sports: [
+				["第1回アテネオリンピックでトーマス・バークが使用し注目を集めた、陸上競技で両手両足を地面につける姿勢のスタート方法を何スタートというでしょう？", "クラウチングスタート"],
+				["オリンピック陸上競技のハードル４種目において使用されるハードルの台数は、いずれも何台でしょう？", "10台"],
+				["今年､ブダペストで行われた世界陸上で昨年に続き､2年連続で100m決勝の舞台で走った選手は誰でしょう？", "サニブラウン・アブデル・ハキーム"],
+				["今年の世界陸上のやり投げ競技で、日本女子のフィールド競技で初めて金メダルを取った選手は誰でしょう？", "北口榛花"],
+				["昨年､行われたサッカーのワールドカップのスペイン戦でゴールラインギリギリでボールを取り返した際に､諦めない執念のプレーとして話題になった『〇〇の1ミリ』に当てはまる選手の名前は何でしょう？", "三苫"],
+				["テニスは試合中握り方を変えるが、その中で「ウェスタングリップ」はどんな場面で使われる握り方でしょうか？", "トップスピンストローク"],
+				["毎年冬に全国男子駅伝が行われる都道府県はどこでしょう？", "広島"],
+				["1998年に冬季五輪が行われた場所はどこでしょう？", "長野県"],
+			],
+
+			Trivia: [
+				["1871年に明治政府が行った、江戸時代までの藩をなくし、代わりに3府302県を設置した地方制度改革のことを一般に漢字4文字で何というでしょう？", "廃藩置県"],
+				["テレビ東京の番組『ワールドビジネスサテライト』で初代メインキャスターを務めたのち政治家に転身し、2016年に東京都初の女性知事となった人物は誰でしょう？", "小池百合子"],
+				["官公庁や企業などにおいて、勤続年数や年齢に応じて地位や賃金が上がる制度・慣習を、漢字4文字で何というでしょう？", "年功序列"],
+				["1946年に相沢忠洋によって発見され、日本で初めて旧石器時代の遺跡であることが確認された、群馬県みどり市にある遺跡は何遺跡でしょう？", "岩宿遺跡"],
+				["東京都港区にある「乃木坂」は、江戸時代まで通称何坂と呼ばれていたでしょう？", "幽霊坂"],
+				["1974年にイサベル・ペロンが世界初の女性大統領に就任した、南米大陸の国はどこでしょう？", "アルゼンチン共和国"],
+				["ドイツの薬剤師アウグスト・エトカーが特許を取得している、パンや焼き菓子などを作る際に使う、重曹に酸性の助剤を加えた膨張剤を「何パウダー」というでしょう？", "ベーキングパウダー"],
+				["2005年にジョード・カリムらによって設立され、彼が投稿した「Me at the zoo」が最初に投稿された動画である、アメリカに本部を置く世界最大の動画共有サービスは何でしょう？", "YouTube"],
+				["1986年4月26日に世界最大級の原子力事故が起きた、現在のウクライナにある原子力発電所はどこでしょう？", "チェルノブイリ原子力発電所"],
+			],
+
+			Kanji: [
+				["漢字では「蝙蝠」と書かれる、超音波の反響を利用して自分や物体の位置を把握するという生態が知られている、バットマンのモチーフにもなっていることでもおなじみの哺乳類の仲間は何でしょう？", "コウモリ"],
+				["日本語では「蘆薈」とも呼ばれ、「医者いらず」という異名を持つ種類もある、ジュースや化粧品などにも使われるツルボラン亜科の多肉植物は何でしょう？", "アロエ"],
+				["漢字では「蟷螂」と表記される肉食性の昆虫で、獲物が少ない環境では共食いを行うこともあり、またハリガネムシに寄生されていることもあることで知られるのは何でしょう？", "カマキリ"],
+				["漢字では「鳩尾」と書かれる身体の部位で、人体の急所の１つとして格闘技や武道においてそこを狙う攻撃が重要な技術となっている、人間の腹の中央にある窪んだ部位は何でしょう？", "みぞおち（きゅうび）"],
+				["漢字では「牛蒡」と書かれる植物で、陸上競技において他の選手を一気に抜き去ることを意味する表現にも使われる、きんぴらなどの料理でおなじみの根菜は何でしょう？", "ごぼう"],
+				["漢字では「独逸」と表記される、メルセデス・ベンツやポルシェなどの自動車ブランドが有名な、首都をベルリンに置くヨーロッパの国はどこでしょう？", "ドイツ"],
+				["漢字では「蟋蟀」と表記される、その鳴き声が世界各地で親しまれているほか、近年昆虫食としての役割も期待されている昆虫は何でしょう？", "コオロギ"],
+				["漢字では「啄木鳥」と書かれる、そのくちばしで樹木の幹に穴を開け、穴の奥にいる昆虫を捕食するという生態に由来する名前を持つ鳥は何でしょう？", "キツツキ"],
+				["漢字では「乾酪」と表記される、ブルー、フレッシュ、カマンベール、モッツァレラなどの種類がある乳製品は何でしょう？", "チーズ"],
+				["漢字では「箪笥」と書かれる、木製のものが多い、衣類や道具を収納するための、引き出しや扉を備えた家具は何でしょう？", "タンス"],
+			],
+
+			Trivia2: [
+				["東京都に現在3駅ある新幹線停車駅とは、上野駅、東京駅と何駅でしょう？", "品川"],
+				["スキー場に設置されている「クワッドリフト」といえば、何人乗りのリフトのことでしょう？", "4人乗り"],
+				["アルファベット3文字で「WLB」と略される、1980年代のアメリカから広まった、やりがいのある仕事と充実した私生活を両立させるという考え方を英語で何というでしょう？", "ワーク・ライフ・バランス"],
+				["箸使いのタブーの1つである、箸に付いたものを口で舐めて取る行為を「何箸」というでしょう。", "ねぶり箸"],
+				["英語で「頂上」という意味がある、1975年にフランスのランブイエで第1回が開かれた「主要国首脳会議」の通称は何でしょう？", "サミット"],
+				["統一金融機関コードは「0000」である、日本の中央銀行といえば何銀行でしょう？", "日本銀行"],
+
+			],
+
+			Entertainment: [
+				["宮崎朝子、松岡彩、吉川美冴貴の3人からなる、『僕に彼女ができたんだ』『ほら、笑ってる』『明日も』などの楽曲で知られるロックバンドは何でしょう？", "SHISHAMO"],
+				["1982年に大ヒットした、少年・エリオットがある地球外生命体を乗せて自転車で夜空を飛ぶシーンなどが有名なスティーブン・スピルバーグ監督のSF映画は何でしょう？", "『E.T.』"],
+				["WIT STUDIOならびにMAPPA制作による日本のアニメ作品で昨日の4日の深夜に完結した巨人がすべてを支配する世界で､壁内に住む主人公が巨人に立ち向かっていく姿を描いた漫画は何でしょう？", "進撃の巨人"],
+				["「たとえば君が傷ついて　くじけそうになった時は」という歌い出しで始まる、杉本竜一が作詞・作曲を手掛けた合唱曲は何でしょう？", "『Believe』"],
+				["2022年に始めて紅白歌合戦に出場し､同年のカラオケランキング第二位のシンデレラボーイという曲を歌ったアーティストは何でしょう？", "Saucy Dog"],
+				["2022年にTik Tokで流行った、「勇気と愛が世界を救う」という歌詞から始まる広瀬香美の3枚目のシングルの曲名は何でしょう？", "ロマンスの神様"],
+
+			],
+		};
+
+		document.addEventListener("DOMContentLoaded", initialize);
+
+		function initialize() {
+			setupReveal();
+			setupQuizzes();
+			setupEventListeners();
+		}
+
+		// Reveal.js setup
+		function setupReveal() {
+			Reveal.initialize({
+				hash: true,
+				keyboard: { 80: null },
+				center: true,
+				controls: false
+			});
+		}
+
+		// Quiz setup
+		function setupQuizzes() {
+			for (let [category, quizList] of Object.entries(QUIZ_DATA)) {
+				populateSlidesWithQuizzes(category, quizList);
+			}
+		}
+
+		function populateSlidesWithQuizzes(category, quizzes) {
+			const section = document.getElementById(category);
+			quizzes.forEach((quiz, index) => {
+				const slide = createQuizSlide(category, quiz, index);
+				section.appendChild(slide);
+			});
+		}
+
+		function createQuizSlide(category, quiz, index) {
+			const slide = document.createElement("section");
+			slide.innerHTML = `
+        <svg width="800" height="800" class="circularAnimation"></svg>
+        <div class="circle red"></div>
+        <div class="circle white"></div>
+        <div class="txt">
+            <p class="question">${formatText(quiz[0])}</p>
+            <p class="answer">${quiz[1]}</p>
+        </div>
+        <div class="subtitle">${category}（${index + 1}）</div>
+    `;
+			return slide;
+		}
+
+		function formatText(str) {
+			return str.split('').map(char => {
+				if (char === '\n') {
+					return '<br>';
+				} else {
+					return `<span class="char">${char}</span>`;
+				}
+			}).join('');
+		}
+
+		// Event listeners setup
+		function setupEventListeners() {
+			document.addEventListener('keydown', handleKeyEvents);
+			Reveal.addEventListener('slidechanged', handleSlideChange);
+		}
+
+		let paused = false;
+		let lastRevealedCharIndex = -1;
+		let timers = [];  // 保存するタイマーIDの配列
+
+		function handleKeyEvents(event) {
+			const currentSlide = Reveal.getCurrentSlide();
+			const category = currentSlide.parentNode.id;
+			const index = Array.from(currentSlide.parentNode.children).indexOf(currentSlide) + 1;
+
+			if (event.key === '1') {
+				startCircularAnimation();
+			} else if (event.key.toLowerCase() === 'a') {
+				displayAnswer(currentSlide);
+			} else if (event.key.toLowerCase() === 'x') {
+				if (!paused) {
+					stopRevealQuestion(currentSlide);
+				} else {
+					resumeRevealQuestion(currentSlide, category, index);
+				}
+				paused = !paused;
+			} else if (event.key.toLowerCase() === 'z') {
+				playAudio(category, index);
+			}
+		}
+
+		function stopRevealQuestion(slide) {
+			// 保存されたすべてのタイマーIDに対してclearTimeoutを呼び出す
+			timers.forEach(timer => clearTimeout(timer));
+			timers = [];
+
+			slide.querySelectorAll('.question .char').forEach((char, index) => {
+				if (getComputedStyle(char).display !== 'none') {
+					lastRevealedCharIndex = index;
+				}
+				char.style.display = 'none';
+			});
+		}
+
+		function handleSlideChange(event) {
+			clearPreviousAnimation(event);
+			hideAllAnswers();
+		}
+
+		function resumeRevealQuestion(slide, category, index) {
+			// lastRevealedCharIndexまでの文字を表示状態にする
+			const chars = slide.querySelectorAll('.question .char');
+			for (let i = 0; i <= lastRevealedCharIndex; i++) {
+				chars[i].style.display = 'inline';
+				chars[i].style.opacity = '1';
+				chars[i].style.transform = 'translateY(1)';
+			}
+
+			// lastRevealedCharIndex以降の文字に対してアニメーションを実行
+			revealQuestionCharsFromIndex(slide, lastRevealedCharIndex + 1);
+		}
+
+		// Helper functions
+		function displayAnswer(slide) {
+			const answer = slide.querySelector('.answer');
+			if (answer) answer.style.display = 'block';
+		}
+
+		function revealQuestionAndPlayAudio(slide, category, index) {
+			revealQuestionChars(slide);
+		}
+
+		function revealQuestionCharsFromIndex(slide, startIndex) {
+			const chars = slide.querySelectorAll('.question .char');
+			chars.forEach((char, index) => {
+				if (index >= startIndex) {
+					const timer = setTimeout(() => {
+						char.style.display = 'inline';
+						char.style.opacity = '1';
+						char.style.transform = 'translateY(1)';
+					}, 120 * (index - startIndex));
+					timers.push(timer);  // タイマーIDを配列に保存
+				}
+			});
+		}
+
+
+		function playAudio(category, index) {
+			const audioPath = `speech/${category}/${String(index).padStart(2, '0')}-q.wav`;
+			const audio = new Audio(audioPath);
+			audio.play();
+		}
+
+		function hideAllAnswers() {
+			document.querySelectorAll('.answer').forEach(answer => {
+				answer.style.display = 'none';
+			});
+		}
+
+
+		function clearPreviousAnimation(event) {
+			const previousSlideSvg = event.previousSlide.querySelector('.circularAnimation');
+			if (previousSlideSvg) {
+				while (previousSlideSvg.firstChild) {
+					previousSlideSvg.firstChild.remove();
+				}
+			}
+		}
+
+		// Animation functions
+		function startCircularAnimation() {
+			// Configuration and constants
+			const numberOfBars = 100;
+			const barLength = 20;
+			const barWidth = 5;
+			const radius = 380;
+			const center = { x: 400, y: 350 };
+			const currentSlide = Reveal.getCurrentSlide();
+			const svg = currentSlide.querySelector('.circularAnimation');
+
+			for (let i = 0; i < numberOfBars; i++) {
+				setTimeout(() => {
+					const angle = i * (360 / numberOfBars) * (Math.PI / 180) - Math.PI / 2; // Removed the addition, using subtraction for clarity
+					const x1 = center.x + radius * Math.cos(angle);
+					const y1 = center.y + radius * Math.sin(angle);
+					const x2 = center.x + (radius + barLength) * Math.cos(angle);
+					const y2 = center.y + (radius + barLength) * Math.sin(angle);
+
+					const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+					line.setAttribute('x1', x1);
+					line.setAttribute('y1', y1);
+					line.setAttribute('x2', x2);
+					line.setAttribute('y2', y2);
+					line.setAttribute('stroke', 'white');
+					line.setAttribute('stroke-width', barWidth);
+
+					svg.appendChild(line);
+				}, i * 100);
+			}
+		}
+
+	</script>
+</body>
+
+</html>

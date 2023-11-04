@@ -105,6 +105,7 @@
 				<section>
 					<h1>早押しクイズ</h1>
 					<img src="クイズ.png" height="500px">
+                    <h2>部屋番号：4450</h2>
 				</section>
 				<section>
 					<img src="qr.png">
@@ -295,6 +296,10 @@
 			Reveal.addEventListener('slidechanged', handleSlideChange);
 		}
 
+        let paused = false;
+        let lastRevealedCharIndex = -1;
+        let timers = [];  // 保存するタイマーIDの配列
+
 		function handleKeyEvents(event) {
 			const currentSlide = Reveal.getCurrentSlide();
 			const category = currentSlide.parentNode.id;
@@ -305,14 +310,48 @@
 			} else if (event.key.toLowerCase() === 'a') {
 				displayAnswer(currentSlide);
 			} else if (event.key.toLowerCase() === 'x') {
-				revealQuestionAndPlayAudio(currentSlide, category, index);
+				if (!paused) {
+                    stopRevealQuestion(currentSlide);
+                } else {
+                    resumeRevealQuestion(currentSlide, category, index);
+                }
+                paused = !paused;
+            } else if (event.key.toLowerCase() === 'z') {
+                playAudio(category, index);
 			}
 		}
+
+        function stopRevealQuestion(slide) {
+            // 保存されたすべてのタイマーIDに対してclearTimeoutを呼び出す
+            timers.forEach(timer => clearTimeout(timer));
+            timers = [];
+
+            slide.querySelectorAll('.question .char').forEach((char, index) => {
+                if (getComputedStyle(char).display !== 'none') {
+                    lastRevealedCharIndex = index;
+                }
+                char.style.display = 'none';
+            });
+        }
 
 		function handleSlideChange(event) {
 			clearPreviousAnimation(event);
 			hideAllAnswers();
 		}
+
+        function resumeRevealQuestion(slide, category, index) {
+            // lastRevealedCharIndexまでの文字を表示状態にする
+            const chars = slide.querySelectorAll('.question .char');
+            for (let i = 0; i <= lastRevealedCharIndex; i++) {
+                chars[i].style.display = 'inline';
+                chars[i].style.opacity = '1';
+                chars[i].style.transform = 'translateY(1)';
+            }
+
+            // lastRevealedCharIndex以降の文字に対してアニメーションを実行
+            revealQuestionCharsFromIndex(slide, lastRevealedCharIndex + 1);
+            // playAudio(category, index);
+        }
 
 		// Helper functions
 		function displayAnswer(slide) {
@@ -322,19 +361,23 @@
 
 		function revealQuestionAndPlayAudio(slide, category, index) {
 			revealQuestionChars(slide);
-			playAudio(category, index);
+			// playAudio(category, index);
 		}
 
-		function revealQuestionChars(slide) {
-			const chars = slide.querySelectorAll('.question .char');
-			chars.forEach((char, index) => {
-				setTimeout(() => {
-					char.style.display = 'inline';
-					char.style.opacity = '1';
-					char.style.transform = 'translateY(1)';
-				}, 120 * index);
-			});
-		}
+        function revealQuestionCharsFromIndex(slide, startIndex) {
+            const chars = slide.querySelectorAll('.question .char');
+            chars.forEach((char, index) => {
+                if (index >= startIndex) {
+                    const timer = setTimeout(() => {
+                        char.style.display = 'inline';
+                        char.style.opacity = '1';
+                        char.style.transform = 'translateY(1)';
+                    }, 120 * (index - startIndex));
+                    timers.push(timer);  // タイマーIDを配列に保存
+                }
+            });
+        }
+
 
 		function playAudio(category, index) {
 			const audioPath = `speech/${category}/${String(index).padStart(2, '0')}-q.wav`;
